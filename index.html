@@ -1,13 +1,18 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
   <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <meta name="referrer" content="strict-origin-when-cross-origin" />
   <title>Sirsnoopy</title>
 
-  <!-- Font Awesome -->
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+  <!-- Font Awesome (icons) -->
+  <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Preload big background for faster first paint -->
+  <link rel="preload" as="image"
+    href="https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg">
 
   <style>
     :root{
@@ -15,51 +20,49 @@
       --yellow: #ffde59;
       --glass-base: rgba(12,12,12,0.95);
       --pill: rgba(255,255,255,0.06);
-
-      /* platform colors */
-      --github: #111;           /* dark (GitHub) */
-      --youtube: #FF0000;       /* YouTube red */
-      --discord: #5865F2;       /* Discord blurple */
+      --text: #ffffff;
+      --muted: #cfcfcf;
+      --card-radius: 40px;
+      --github: #111827;
+      --youtube: #FF0000;
+      --discord: #5865F2;
     }
 
     *{box-sizing:border-box;margin:0;padding:0;font-family:'Inter', system-ui, -apple-system, sans-serif}
-
     html,body{height:100%}
     body{
       min-height:100vh;
       display:grid;
       place-items:center;
-      background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)),
-        url('https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg');
-      background-size:cover;
-      background-position:center;
-      background-attachment:fixed;
-      color:#fff;
+      color:var(--text);
       padding:clamp(10px,3vw,40px);
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      background-color:#0b1220;
+      background-attachment:fixed;
+      background: linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8));
     }
 
     .card{
       width:clamp(320px,95%,1050px);
       background:var(--glass-base);
       border:1px solid rgba(255,255,255,0.08);
-      border-radius:40px;
+      border-radius:var(--card-radius);
       padding:clamp(30px,6vw,70px);
       display:flex;
       flex-direction:column;
       align-items:center;
-      gap:40px;
+      gap:28px;
       backdrop-filter: blur(30px);
       -webkit-backdrop-filter: blur(30px);
       box-shadow: 0 50px 100px rgba(0,0,0,0.9);
       animation: fadeIn .8s ease-out;
+      transition: transform .18s ease, box-shadow .18s ease;
     }
+    .card:hover{ transform: translateY(-4px); box-shadow: 0 60px 120px rgba(0,0,0,0.95); }
 
-    @keyframes fadeIn{
-      from{opacity:0; transform:translateY(20px)}
-      to{opacity:1; transform:translateY(0)}
-    }
+    @keyframes fadeIn{ from{opacity:0; transform:translateY(20px)} to{opacity:1; transform:translateY(0)} }
 
-    /* Profile image */
     .pfp-outer{
       width:clamp(160px, 28vw, 280px);
       height:clamp(160px, 28vw, 280px);
@@ -72,12 +75,7 @@
       box-shadow:0 0 50px rgba(255,222,89,0.12);
       flex-shrink:0;
     }
-    .pfp-img{
-      width:100%;
-      height:100%;
-      object-fit:cover; /* fixes rectangular cropping bug */
-      display:block;
-    }
+    .pfp-img{ width:100%; height:100%; object-fit:cover; display:block }
 
     .main-info{
       flex:1;
@@ -86,6 +84,7 @@
       align-items:center;
       text-align:center;
       gap:18px;
+      width:100%;
     }
 
     .greeting{
@@ -110,8 +109,13 @@
       padding:22px 30px;
       border-radius:28px;
       margin-bottom:8px;
-      max-width:600px;
+      max-width:760px;
       width:100%;
+      display:flex;
+      gap:16px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
     }
 
     .typing-box{
@@ -122,17 +126,11 @@
       align-items:center;
       gap:8px;
       flex-wrap:wrap;
+      min-width:180px;
     }
-
     .blue{ color:var(--blue) }
+    .bio{ font-size:1rem; line-height:1.6; color:#ccc; max-width:520px }
 
-    .bio{
-      font-size:1rem;
-      line-height:1.6;
-      color:#ccc;
-    }
-
-    /* Social links */
     .social-pill{
       background:var(--pill);
       border:1px solid rgba(255,255,255,0.08);
@@ -140,148 +138,342 @@
       border-radius:999px;
       display:flex;
       gap:16px;
-      transition:0.22s ease;
       align-items:center;
       justify-content:center;
+      flex-wrap:wrap;
     }
 
-    .social-pill:hover{
-      border-color:var(--blue);
-      background: rgba(0,210,255,0.04);
-    }
-
-    /* make each anchor a circular tappable target */
     .social-link{
-      display:inline-flex;
-      align-items:center;
-      justify-content:center;
-      width:46px;
-      height:46px;
-      border-radius:50%;
-      background: rgba(255,255,255,0.03);
-      text-decoration:none;
-      transition: transform .18s ease, box-shadow .18s ease, filter .18s ease;
-      font-size:1.25rem;
-      line-height:1;
-      box-shadow: 0 6px 14px rgba(0,0,0,0.45);
-      outline: none;
-      color: #fff; /* fallback if class missing */
+      display:inline-flex; align-items:center; justify-content:center;
+      width:56px; height:56px; border-radius:12px; text-decoration:none;
+      transition: transform .22s cubic-bezier(.2,.9,.2,1), box-shadow .22s ease;
+      font-size:1.25rem; color:#fff; box-shadow: 0 6px 16px rgba(0,0,0,0.45);
     }
 
-    /* platform colors (applied to the icon itself) */
-    .social-link.github { color: var(--github); background: rgba(255,255,255,0.06); }
-    .social-link.youtube { color: var(--youtube); background: rgba(255,255,255,0.04); }
-    .social-link.discord { color: var(--discord); background: rgba(255,255,255,0.04); }
+    .social-link.github { background: linear-gradient(180deg, rgba(255,255,255,0.03), var(--github)); color:#fff; }
+    .social-link.youtube { background: linear-gradient(180deg, rgba(255,255,255,0.02), var(--youtube)); color:#fff; }
+    .social-link.discord { background: linear-gradient(180deg, rgba(255,255,255,0.02), var(--discord)); color:#fff; }
 
-    .social-link:hover{
-      transform: translateY(-5px) scale(1.06);
-      filter:brightness(1.05);
-      box-shadow: 0 10px 24px rgba(0,0,0,0.55);
+    .social-link:hover{ transform: translateY(-6px) scale(1.06); filter:brightness(1.03); box-shadow: 0 14px 36px rgba(0,0,0,0.6); }
+
+    .has-tip{ position:relative; }
+    .has-tip[data-tip]:hover::after{
+      content: attr(data-tip);
+      position:absolute;
+      bottom:-38px;
+      left:50%;
+      transform:translateX(-50%);
+      background:rgba(0,0,0,0.85);
+      color:#fff;
+      padding:6px 10px;
+      border-radius:8px;
+      font-size:.78rem;
+      white-space:nowrap;
+      pointer-events:none;
+      z-index:60;
+      box-shadow:0 8px 20px rgba(0,0,0,0.6);
     }
-
-    /* keyboard focus */
-    .social-link:focus{
-      box-shadow: 0 0 0 4px rgba(0,210,255,0.12);
-      transform: translateY(-4px);
-    }
-
-    .social-link i{ pointer-events:none } /* icon not interactive separately */
 
     .cursor{ border-left:3px solid var(--blue); margin-left:6px; animation: blink .9s infinite; height:1.22em }
     @keyframes blink{ 50%{ opacity:0 } }
 
-    /* responsive layout */
+    .tw-panel{
+      display:flex; flex-direction:column; gap:10px; align-items:center; min-width:220px; margin-left:8px;
+    }
+    .tw-row{ display:flex; gap:12px; align-items:center; justify-content:center; flex-wrap:wrap; }
+    .time-box, .weather-box{
+      background: rgba(255,255,255,0.03);
+      border:1px solid rgba(255,255,255,0.06);
+      padding:10px 14px;
+      border-radius:14px;
+      display:flex; gap:12px; align-items:center; min-width:120px;
+    }
+    .time-large{ font-weight:800; font-size:1rem }
+    .tz-small{ font-size:.78rem; color:var(--muted) }
+    .w-temp{ font-weight:800 }
+    .w-cond{ font-size:.92rem; color:var(--muted) }
+
     @media(min-width:950px){
-      .card{ flex-direction:row; text-align:left; gap:36px }
+      .card{ flex-direction:row; text-align:left; gap:36px; align-items:flex-start }
       .main-info{ align-items:flex-start; text-align:left }
       .social-pill{ justify-content:flex-start }
+      .about-pill{ justify-content:flex-start }
     }
 
-    /* small screens tweak */
     @media(max-width:420px){
       .social-link{ width:44px;height:44px;font-size:1.05rem }
+    }
+
+    @media (prefers-reduced-motion: reduce){
+      .card, .social-link, .pfp-outer { transition: none !important; animation: none !important; }
     }
   </style>
 </head>
 
 <body>
   <main class="card" role="main" aria-labelledby="intro-heading">
+
     <div class="pfp-outer" aria-hidden="true">
-      <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/c0e9641a-6ab6-4aae-87ee-11a4ff2da95d.sketchpad%20(1).png"
+      <img loading="lazy" decoding="async"
+        src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/c0e9641a-6ab6-4aae-87ee-11a4ff2da95d.sketchpad%20(1).png"
         alt="Portrait of Sirsnoopy" class="pfp-img">
     </div>
 
     <div class="main-info">
       <p id="intro-heading" class="greeting">Hello, my name is</p>
 
-      <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/download__7_-removebg-preview.png"
+      <img loading="lazy" decoding="async"
+        src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/download__7_-removebg-preview.png"
         alt="Andrew - name logo" class="name-logo">
 
       <section class="about-pill" aria-label="About">
-        <div class="typing-box" aria-live="polite">
-          I have experience in <span class="blue" id="typewriter" aria-atomic="true"></span><span class="cursor" aria-hidden="true"></span>
+        <div style="display:flex;flex-direction:column;gap:8px;min-width:280px;">
+          <div class="typing-box" aria-live="polite">
+            I have experience in <span class="blue" id="typewriter" aria-atomic="true"></span><span class="cursor" aria-hidden="true"></span>
+          </div>
+          <p class="bio">I make and find cool stuff.</p>
         </div>
-        <p class="bio">I make and find cool stuff.</p>
+
+        <div class="tw-panel" aria-hidden="false" style="margin-left:auto">
+          <div class="tw-row" id="twRowTop">
+            <div class="time-box" id="timeBox" title="Local time">
+              <i class="fa-regular fa-clock" aria-hidden="true" style="width:20px"></i>
+              <div>
+                <div class="time-large" id="localTime">--:--</div>
+                <div class="tz-small" id="tzLabel">Local time</div>
+              </div>
+            </div>
+
+            <div class="weather-box" id="weatherBox" title="Weather">
+              <i id="wIcon" class="fa-solid fa-sun" aria-hidden="true" style="width:24px"></i>
+              <div style="display:flex;flex-direction:column;">
+                <div class="w-temp" id="wTemp">--°</div>
+                <div class="w-cond" id="wCond">Loading...</div>
+              </div>
+            </div>
+          </div>
+
+          <div style="font-size:.78rem;color:var(--muted);text-align:center;" id="twStatus"></div>
+        </div>
       </section>
 
       <nav class="social-pill" aria-label="Social media links">
-        <a class="social-link github" href="https://github.com/code-andrewy" target="_blank" rel="noopener noreferrer"
-          aria-label="GitHub — opens in new tab" title="GitHub">
+        <a class="social-link github has-tip" data-tip="GitHub"
+           href="https://github.com/code-andrewy" target="_blank" rel="noopener noreferrer" aria-label="GitHub">
           <i class="fa-brands fa-github" aria-hidden="true"></i>
         </a>
 
-        <a class="social-link youtube" href="https://www.youtube.com/@SirSnoopsiee" target="_blank"
-          rel="noopener noreferrer" aria-label="YouTube — opens in new tab" title="YouTube">
+        <a class="social-link youtube has-tip" data-tip="YouTube"
+           href="https://www.youtube.com/@SirSnoopsiee" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
           <i class="fa-brands fa-youtube" aria-hidden="true"></i>
         </a>
 
-        <a class="social-link discord" href="https://discord.com/users/1453900770524266516" target="_blank"
-          rel="noopener noreferrer" aria-label="Discord — opens in new tab" title="Discord">
+        <a class="social-link discord has-tip" data-tip="Discord"
+           href="https://discord.com/users/1453900770524266516" target="_blank" rel="noopener noreferrer" aria-label="Discord">
           <i class="fa-brands fa-discord" aria-hidden="true"></i>
         </a>
       </nav>
     </div>
   </main>
 
+  <!-- Typewriter script (kept simple & safe) -->
   <script>
-    // ---- Typewriter (fixed logic: never negative, clean transitions) ----
     (function () {
-      const words = ["Coding", "Scratch", "Html/Javascript/Css", "Exploit finding."];
+      const words = ["Coding", "Scratch coding", "Html/Javascript/Css", "Exploit finding."];
       let wordIdx = 0;
       let charIdx = 0;
       let isDeleting = false;
       const target = document.getElementById("typewriter");
 
       function type() {
-        if (!target) return; // safety
+        if (!target) return;
         const currentWord = words[wordIdx] || "";
         if (isDeleting) {
           charIdx = Math.max(0, charIdx - 1);
         } else {
           charIdx = Math.min(currentWord.length, charIdx + 1);
         }
-
         target.textContent = currentWord.substring(0, charIdx);
 
         let speed = isDeleting ? 60 : 140;
 
         if (!isDeleting && charIdx === currentWord.length) {
-          // pause at end
           speed = 2500;
           isDeleting = true;
         } else if (isDeleting && charIdx === 0) {
-          // move to next word
           isDeleting = false;
           wordIdx = (wordIdx + 1) % words.length;
           speed = 500;
         }
-
         setTimeout(type, speed);
       }
 
-      document.addEventListener("DOMContentLoaded", type);
+      if (document.readyState === 'loading') {
+        document.addEventListener("DOMContentLoaded", type);
+      } else {
+        type();
+      }
+    })();
+  </script>
+
+  <!-- Background preload (non-blocking) -->
+  <script>
+    (function preloadBg() {
+      const url = 'https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg';
+      const img = new Image();
+      img.src = url;
+      img.onload = () => {
+        document.body.style.backgroundImage = `linear-gradient(rgba(0,0,0,0.8), rgba(0,0,0,0.8)), url('${url}')`;
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center';
+        document.body.style.backgroundAttachment = 'fixed';
+      };
+      img.onerror = () => console.warn('Background preload failed');
+    })();
+  </script>
+
+  <!-- Time & Weather (default New Hampshire location; faster, updates every 1 minute) -->
+  <script>
+    // Elements
+    const timeEl = document.getElementById('localTime');
+    const tzLabel = document.getElementById('tzLabel');
+    const wTemp = document.getElementById('wTemp');
+    const wCond = document.getElementById('wCond');
+    const wIcon = document.getElementById('wIcon');
+    const twStatus = document.getElementById('twStatus');
+
+    // Default: center-ish New Hampshire (no permission prompt, instant)
+    const DEFAULT_LOCATION = {
+      lat: 43.1939,
+      lon: -71.5724,
+      label: "New Hampshire"
+    };
+
+    // Respect reduced-motion preference
+    const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    if (prefersReduced) document.documentElement.classList.add('reduced-motion');
+
+    // Clock: update every 1 minute (aligned to minute boundary)
+    (function startClock(){
+      function update(){
+        const now = new Date();
+        timeEl.textContent = new Intl.DateTimeFormat(undefined, {
+          hour: 'numeric',
+          minute:'2-digit',
+          hour12: true
+        }).format(now);
+
+        try {
+          tzLabel.textContent = Intl.DateTimeFormat().resolvedOptions().timeZone || "Local time";
+        } catch(e){
+          tzLabel.textContent = "Local time";
+        }
+      }
+
+      // align first update to the next exact minute to reduce jitter
+      update();
+      const msToNextMinute = 60000 - (Date.now() % 60000);
+      setTimeout(() => {
+        update();
+        setInterval(update, 60_000);
+      }, msToNextMinute);
+    })();
+
+    // safe DOM setter
+    function setSafeText(el, txt){
+      if(!el) return;
+      el.textContent = String(txt);
+    }
+
+    // fetch with timeout
+    async function fetchTimeout(resource, options = {}, timeout = 10000) {
+      const controller = new AbortController();
+      const id = setTimeout(() => controller.abort(), timeout);
+      try {
+        const res = await fetch(resource, {...options, signal: controller.signal});
+        clearTimeout(id);
+        return res;
+      } catch (err) {
+        clearTimeout(id);
+        throw err;
+      }
+    }
+
+    // map weather condition text to Font Awesome icons (approximate)
+    function conditionToFaClass(cond){
+      if(!cond) return 'fa-solid fa-cloud';
+      const c = cond.toLowerCase();
+      if (c.includes('sun') || c.includes('clear')) return 'fa-solid fa-sun';
+      if (c.includes('partly') && c.includes('cloud')) return 'fa-solid fa-cloud-sun';
+      if (c.includes('cloud') && (c.includes('sun') === false)) return 'fa-solid fa-cloud';
+      if (c.includes('rain') || c.includes('showers') || c.includes('drizzle')) return 'fa-solid fa-cloud-rain';
+      if (c.includes('thunder') || c.includes('storm') || c.includes('t-storm')) return 'fa-solid fa-bolt';
+      if (c.includes('snow') || c.includes('sleet') || c.includes('flurr')) return 'fa-solid fa-snowflake';
+      if (c.includes('fog') || c.includes('haze') || c.includes('mist')) return 'fa-solid fa-smog';
+      return 'fa-solid fa-cloud';
+    }
+
+    // fetch weather from weather.gov (points -> forecast)
+    async function fetchWeather(lat, lon){
+      try {
+        twStatus.textContent = 'Loading weather…';
+        const ptsUrl = `https://api.weather.gov/points/${lat},${lon}`;
+        const ptsRes = await fetchTimeout(ptsUrl, { headers: { 'Accept': 'application/geo+json, application/json' }}, 9000);
+        if(!ptsRes.ok) throw new Error('Points lookup failed: ' + ptsRes.status);
+        const pts = await ptsRes.json();
+
+        // choose forecast (prefer hourly if available)
+        const forecastUrl = pts?.properties?.forecastHourly || pts?.properties?.forecast;
+        if(!forecastUrl) throw new Error('No forecast URL returned');
+
+        const fRes = await fetchTimeout(forecastUrl, {}, 9000);
+        if(!fRes.ok) throw new Error('Forecast fetch failed: ' + fRes.status);
+        const fJson = await fRes.json();
+
+        const periods = fJson?.properties?.periods || fJson?.periods || [];
+        if(!periods.length) throw new Error('No forecast periods');
+
+        // use first period
+        const p = periods[0];
+
+        setSafeText(wTemp, p?.temperature ? `${p.temperature}°${p.temperatureUnit || ''}` : '--');
+        setSafeText(wCond, p?.shortForecast || p?.name || 'Unavailable');
+
+        const faClass = conditionToFaClass(p?.shortForecast || p?.name);
+        // reset & apply icon classes
+        wIcon.className = '';
+        wIcon.classList.add(...faClass.split(' '));
+        wIcon.setAttribute('aria-hidden', 'true');
+
+        document.getElementById('weatherBox').setAttribute('title', `Weather: ${p?.name || ''} • ${p?.shortForecast || ''}`);
+
+        twStatus.textContent = ` ${DEFAULT_LOCATION.label}`;
+      } catch (err) {
+        console.error('Weather fetch error:', err);
+        setSafeText(wTemp, '--');
+        setSafeText(wCond, 'Unavailable');
+        wIcon.className = 'fa-solid fa-cloud';
+        twStatus.textContent = 'Weather unavailable';
+      }
+    }
+
+    // initialize: show NH immediately; refresh every 1 minute
+    (function initTW(){
+      // Immediately label location
+      tzLabel.textContent = (tzLabel.textContent || 'Local time') + ` • ${DEFAULT_LOCATION.label}`;
+
+      // initial fetch now
+      fetchWeather(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon);
+
+      // align next update to minute boundary to avoid bunching
+      const msToNextMinute = 60000 - (Date.now() % 60000);
+      setTimeout(() => {
+        // first aligned refresh
+        fetchWeather(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon);
+        // then regular interval
+        setInterval(() => fetchWeather(DEFAULT_LOCATION.lat, DEFAULT_LOCATION.lon), 60_000);
+      }, msToNextMinute);
     })();
   </script>
 </body>
-
 </html>
