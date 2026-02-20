@@ -1,1095 +1,339 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width,initial-scale=1" />
-    <title>Sirsnoopy | Coder</title>
-    <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/c0e9641a-6ab6-4aae-87ee-11a4ff2da95d.sketchpad%20(1).png">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-
-    <style>
-        /* ================================
-   FULL CSS - Original + Bug Fixes
-   Paste entire block into your stylesheet
-   ================================ */
-
-        /* ---------------------------
-   ORIGINAL VARS & BASE (kept intact)
-   --------------------------- */
-        :root {
-            --blue: #00d2ff;
-            --yellow: #ffde59;
-            --glass: rgba(15, 20, 35, 0.75);
-            --border: rgba(255, 255, 255, 0.15);
-            --text: #ffffff;
-            --muted: #cbd5e1;
-            --github: #24292e;
-            --youtube: #FF0000;
-            --discord: #5865F2;
-        }
-
-        /* Reset / base */
-        *,
-        *::before,
-        *::after {
-            box-sizing: border-box;
-        }
-
-        html,
-        body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            -webkit-font-smoothing: antialiased;
-            -moz-osx-font-smoothing: grayscale;
-            color: var(--text);
-            background:
-                linear-gradient(rgba(0, 0, 0, 0.45), rgba(0, 0, 0, 0.45)),
-                url('https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg');
-            background-size: cover;
-            background-position: center;
-            padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 20px) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 20px);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            min-height: 100vh;
-            /* avoid fixed background on small devices (can cause weird behaviour) */
-            background-attachment: scroll;
-            -webkit-touch-callout: none;
-            -webkit-user-select: none;
-            user-select: none;
-            -webkit-user-drag: none;
-            overflow: auto;
-        }
-
-        /* Enable fixed background only on wide viewports */
-        @media (min-width: 1100px) {
-            body {
-                background-attachment: fixed;
-            }
-        }
-
-        /* Context menu & ripple (kept from your original) */
-        #context-menu {
-            position: fixed;
-            background: rgba(20, 25, 40, 0.95);
-            backdrop-filter: blur(12px);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 8px;
-            width: 180px;
-            display: none;
-            z-index: 10000;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-        }
-
-        .menu-item {
-            padding: 10px 14px;
-            font-size: 0.85rem;
-            border-radius: 8px;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
-
-        .menu-item:hover {
-            background: rgba(255, 255, 255, 0.06);
-        }
-
-        .menu-item i {
-            color: var(--blue);
-            font-size: 0.95rem;
-        }
-
-        .ripple {
-            position: fixed;
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            background: rgba(255, 255, 255, 0.22);
-            animation: rippleEffect 0.6s ease-out forwards;
-            z-index: 9999;
-        }
-
-        @keyframes rippleEffect {
-            to {
-                width: 120px;
-                height: 120px;
-                opacity: 0;
-            }
-        }
-
-        /* Outer wrapper to control max width and spacing */
-        .container {
-            width: 100%;
-            max-width: 1100px;
-            margin: 0 auto;
-            padding: 12px;
-            perspective: 1500px;
-            z-index: 10;
-        }
-
-        /* Card: make fully responsive and never get cut off */
-        .card {
-            width: 100%;
-            background: var(--glass);
-            border: 1px solid var(--border);
-            border-radius: 36px;
-            padding: clamp(18px, 3.5vw, 48px);
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: clamp(16px, 3vw, 40px);
-            backdrop-filter: blur(28px) saturate(160%);
-            -webkit-backdrop-filter: blur(28px) saturate(160%);
-            box-shadow: 0 40px 90px rgba(0, 0, 0, 0.55);
-            transform-style: preserve-3d;
-            transition: transform 0.12s ease-out;
-            position: relative;
-            /* Crucial: limit card height so it never overflows viewport without scrolling */
-            max-height: calc(100vh - 40px);
-            overflow: auto;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        /* Glow layer */
-        .card-glow {
-            position: absolute;
-            inset: 0;
-            background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.08), transparent 45%);
-            pointer-events: none;
-            z-index: 3;
-            border-radius: inherit;
-        }
-
-        /* Profile column */
-        .profile-section {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            gap: clamp(16px, 2.6vw, 30px);
-            z-index: 2;
-            padding-bottom: 4px;
-        }
-
-        .pfp-outer {
-            width: clamp(120px, 20vw, 230px);
-            height: clamp(120px, 20vw, 230px);
-            background: var(--yellow);
-            border-radius: 50%;
-            padding: 6px;
-            box-shadow: 0 20px 45px rgba(0, 0, 0, 0.5);
-            transition: transform 0.4s cubic-bezier(.175, .885, .32, 1.275);
-            flex-shrink: 0;
-        }
-
-        .pfp-outer:hover {
-            transform: scale(1.04);
-        }
-
-        .pfp-inner {
-            width: 100%;
-            height: 100%;
-            border-radius: 50%;
-            overflow: hidden;
-            border: 5px solid rgba(0, 0, 0, 0.12);
-        }
-
-        .pfp-img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            display: block;
-        }
-
-        /* Content column */
-        .content-section {
-            z-index: 2;
-            display: flex;
-            flex-direction: column;
-            gap: clamp(12px, 2.2vw, 28px);
-        }
-
-        .greeting {
-            color: var(--blue);
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            font-weight: 800;
-            font-size: 0.72rem;
-            margin-bottom: 6px;
-            opacity: 0.95;
-        }
-
-        .name-logo {
-            max-width: 320px;
-            width: 100%;
-            filter: drop-shadow(0 8px 15px rgba(0, 0, 0, 0.4));
-            margin-bottom: 6px;
-        }
-
-        .typewriter-wrap {
-            font-size: clamp(1rem, 2.6vw, 1.7rem);
-            font-weight: 700;
-            min-height: 1.4em;
-            line-height: 1.1;
-            word-break: break-word;
-        }
-
-        .bio {
-            color: var(--muted);
-            font-size: clamp(0.95rem, 1.9vw, 1.05rem);
-            line-height: 1.7;
-            background: rgba(0, 0, 0, 0.28);
-            padding: 14px 18px;
-            border-radius: 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            max-width: 100%;
-            overflow: auto;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-            gap: 12px;
-        }
-
-        .stat-box {
-            background: rgba(255, 255, 255, 0.04);
-            padding: 14px;
-            border-radius: 14px;
-            border: 1px solid var(--border);
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            transition: transform .28s ease, background .28s ease, border-color .28s ease;
-        }
-
-        .stat-box:hover {
-            transform: translateY(-6px);
-            background: rgba(255, 255, 255, 0.06);
-            border-color: var(--blue);
-        }
-
-        .stat-box i {
-            font-size: 1.25rem;
-            color: var(--blue);
-        }
-
-        .stat-val {
-            font-weight: 700;
-            font-size: 1rem;
-            display: block;
-        }
-
-        .stat-label {
-            font-size: 0.72rem;
-            color: var(--muted);
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .social-row {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .social-btn {
-            width: 52px;
-            height: 52px;
-            border-radius: 12px;
-            background: rgba(255, 255, 255, 0.07);
-            border: 1px solid var(--border);
-            color: white;
-            font-size: 1.2rem;
-            display: grid;
-            place-items: center;
-            text-decoration: none;
-            transition: transform .22s cubic-bezier(.175, .885, .32, 1.275), box-shadow .22s;
-        }
-
-        .social-btn:hover {
-            transform: translateY(-8px) scale(1.06);
-            box-shadow: 0 12px 28px rgba(0, 0, 0, 0.28);
-        }
-
-        .btn-github:hover {
-            background: var(--github);
-        }
-
-        .btn-youtube:hover {
-            background: var(--youtube);
-        }
-
-        .btn-discord:hover {
-            background: var(--discord);
-        }
-
-        /* Desktop layout */
-        @media (min-width: 850px) {
-            .card {
-                grid-template-columns: 320px 1fr;
-                align-items: center;
-                gap: 36px;
-                padding: clamp(28px, 3.8vw, 56px);
-            }
-
-            .profile-section {
-                border-right: 1px solid var(--border);
-                padding-right: 36px;
-            }
-
-            .content-section {
-                padding-left: 6px;
-            }
-        }
-
-        /* Small screens — compress padding and make sure nothing is clipped */
-        @media (max-width: 600px) {
-            .card {
-                padding: 16px;
-                border-radius: 20px;
-                gap: 16px;
-                max-height: calc(100vh - 20px);
-            }
-
-            .profile-section {
-                border-right: none;
-                padding: 0;
-            }
-
-            .social-row {
-                justify-content: center;
-            }
-
-            .name-logo {
-                max-width: 260px;
-                margin: 0 auto;
-                display: block;
-            }
-
-            .greeting {
-                text-align: center;
-            }
-
-            .pfp-outer {
-                padding: 4px;
-            }
-
-            .social-btn {
-                width: 48px;
-                height: 48px;
-                font-size: 1.05rem;
-                border-radius: 10px;
-            }
-
-            .bio {
-                padding: 12px;
-                border-radius: 12px;
-            }
-        }
-
-        /* Very small phones */
-        @media (max-width: 420px) {
-            .pfp-outer {
-                width: clamp(96px, 28vw, 160px);
-                height: clamp(96px, 28vw, 160px);
-            }
-
-            .typewriter-wrap {
-                font-size: 1.05rem;
-            }
-
-            .stat-box {
-                padding: 11px;
-                gap: 10px;
-            }
-
-            .info-grid {
-                grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
-            }
-
-            .card {
-                padding: 12px;
-                border-radius: 16px;
-            }
-        }
-
-        /* Accessibility helpers */
-        a:focus-visible,
-        button:focus-visible {
-            outline: 3px solid rgba(0, 210, 255, 0.18);
-            outline-offset: 3px;
-            border-radius: 8px;
-        }
-
-        /* Small animation */
-        @keyframes blink {
-            50% {
-                opacity: 0;
-            }
-        }
-
-
-        /* ---------------------------
-   ADDITIONS & BUG FIXES (do not remove anything above)
-   --------------------------- */
-
-        /* 1) Prevent text selection globally but allow in inputs - fixes mobile long-press leaks */
-        body * {
-            -webkit-user-select: none;
-            user-select: none;
-        }
-
-        input,
-        textarea,
-        [contenteditable="true"] {
-            -webkit-user-select: text;
-            user-select: text;
-        }
-
-        /* 2) Smooth transitions & reduced motion support */
-        :root {
-            --smooth-fast: 160ms;
-            --smooth-medium: 260ms;
-            --smooth-slow: 420ms;
-        }
-
-        * {
-            transition-duration: var(--smooth-medium);
-            transition-timing-function: cubic-bezier(.2, .9, .28, 1);
-        }
-
-        @media (prefers-reduced-motion: reduce) {
-            * {
-                transition: none !important;
-                animation: none !important;
-                scroll-behavior: auto !important;
-            }
-        }
-
-        /* 3) Scrollbar styling for card/bio (so systems with overflow look neat) */
-        .card::-webkit-scrollbar,
-        .bio::-webkit-scrollbar {
-            height: 10px;
-            width: 10px;
-        }
-
-        .card::-webkit-scrollbar-thumb,
-        .bio::-webkit-scrollbar-thumb {
-            background: linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.03));
-            border-radius: 999px;
-            border: 1px solid rgba(255, 255, 255, 0.02);
-        }
-
-        .card::-webkit-scrollbar-track,
-        .bio::-webkit-scrollbar-track {
-            background: transparent;
-        }
-
-        /* 4) Improve card transform smoothing so tilt feels natural */
-        .card {
-            will-change: transform;
-            transition: transform 0.18s cubic-bezier(.2, .9, .28, 1), box-shadow var(--smooth-medium);
-        }
-
-        /* 5) Slightly soften pfp hover & add focus state */
-        .pfp-outer {
-            transition: transform 0.45s cubic-bezier(.17, .84, .44, 1.02), box-shadow var(--smooth-medium);
-            box-shadow: 0 18px 42px rgba(0, 0, 0, 0.48);
-        }
-
-        .pfp-outer:focus-within,
-        .pfp-outer:focus {
-            transform: translateY(-6px) scale(1.02);
-            outline: 3px solid rgba(0, 210, 255, 0.12);
-        }
-
-        /* 6) Make social buttons more consistent on small screens */
-        .social-btn {
-            transition: transform .22s cubic-bezier(.175, .885, .32, 1.275), box-shadow .22s, background .22s;
-            will-change: transform;
-        }
-
-        /* 7) Copy button base styles (present even if hidden) */
-        .copy-btn {
-            appearance: none;
-            border: 1px solid var(--border);
-            background: rgba(255, 255, 255, 0.06);
-            color: var(--text);
-            padding: clamp(8px, 1.4vw, 12px) clamp(10px, 2vw, 16px);
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: clamp(0.85rem, 1.6vw, 0.95rem);
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 10px;
-            transition:
-                transform .22s cubic-bezier(.175, .885, .32, 1.275),
-                background .18s ease,
-                border-color .18s ease,
-                box-shadow .18s ease,
-                opacity 220ms ease;
-            -webkit-tap-highlight-color: transparent;
-            touch-action: manipulation;
-        }
-
-        /* 8) Toast notification (replaces inline fallback visuals) */
-        .copy-toast {
-            backdrop-filter: blur(12px);
-            background: rgba(15, 20, 35, 0.88);
-            border: 1px solid var(--border);
-            border-radius: 14px;
-            padding: 10px 16px;
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--text);
-            box-shadow: 0 14px 35px rgba(0, 0, 0, 0.45);
-            animation: toastIn .22s ease-out;
-            z-index: 100001;
-        }
-
-        @keyframes toastIn {
-            from {
-                opacity: 0;
-                transform: translate(-50%, 8px);
-            }
-
-            to {
-                opacity: 1;
-                transform: translate(-50%, 0);
-            }
-        }
-
-        /* 9) Improve ripple animation (less jarring on mobile) */
-        .ripple {
-            width: 12px;
-            height: 12px;
-            background: rgba(255, 255, 255, 0.16);
-            animation: rippleEffect 0.56s cubic-bezier(.2, .9, .28, 1) forwards;
-            opacity: 1;
-        }
-
-        @keyframes rippleEffect {
-            0% {
-                transform: translate(-50%, -50%) scale(0.01);
-                opacity: 0.9;
-            }
-
-            60% {
-                transform: translate(-50%, -50%) scale(0.75);
-                opacity: 0.45;
-            }
-
-            100% {
-                transform: translate(-50%, -50%) scale(4.0);
-                opacity: 0;
-            }
-        }
-
-        /* 10) Tiny accessibility & layout helpers */
-        .card-glow {
-            transition: background-position 260ms linear, opacity 320ms ease;
-        }
-
-        .menu-item {
-            -webkit-tap-highlight-color: transparent;
-        }
-
-        .menu-item:active {
-            transform: scale(0.995);
-        }
-
-        /* 11) Micro-typography tuning for small devices */
-        .typewriter-wrap {
-            letter-spacing: -0.01em;
-        }
-
-        .greeting {
-            letter-spacing: 2.6px;
-        }
-
-        /* 12) Ensure images inside .pfp-inner don't flicker when loading */
-        .pfp-img {
-            display: block;
-            backface-visibility: hidden;
-            -webkit-transform: translateZ(0);
-        }
-
-        /* 13) Safety: ensure focus states for interactive elements */
-        button,
-        a,
-        .copy-btn,
-        .social-btn {
-            -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
-            touch-action: manipulation;
-        }
-
-        /* 14) Utility: make sure long names / logos wrap nicely */
-        .name-logo,
-        .typewriter-wrap {
-            word-break: break-word;
-            hyphens: auto;
-        }
-
-        /* 15) Small tweak: reduce shadow on tiny screens to avoid clipping */
-        @media (max-width: 420px) {
-            .card {
-                box-shadow: 0 18px 48px rgba(0, 0, 0, 0.42);
-            }
-
-            .pfp-outer {
-                box-shadow: 0 12px 28px rgba(0, 0, 0, 0.4);
-            }
-        }
-
-        /* 16) Optional: subtle parallax cursor hint on wide screens */
-        @media (min-width: 1200px) {
-            .card:hover {
-                transform: translateZ(8px) scale(1.0006);
-            }
-        }
-
-        /* 17) Lightweight helper for hidden <a> inside copy-btn (so it remains screen-reader-friendly) */
-        .copy-btn a[hidden] {
-            display: none !important;
-        }
-
-        /* ---------------------------
-   COPY-BUTTON VISIBILITY & POLISH
-   (HIDE BY DEFAULT, SHOW WHEN LINK)
-   --------------------------- */
-
-        /* Hide copy button visually & from interaction by default (no layout shift) */
-        .copy-btn {
-            display: none !important;
-            opacity: 0;
-            pointer-events: none;
-            transform: translateY(6px) scale(0.96);
-            transition: opacity 220ms ease, transform 220ms cubic-bezier(.2, .9, .28, 1), box-shadow 160ms ease;
-        }
-
-        /* Show when author explicitly marks it as a link copy button */
-        .copy-btn.is-link {
-            display: inline-flex !important;
-            opacity: 1 !important;
-            pointer-events: auto !important;
-            transform: translateY(0) scale(1) !important;
-        }
-
-        /* Also show automatically when a data-copy-url attribute exists and is non-empty */
-        .copy-btn[data-copy-url]:not([data-copy-url=""]) {
-            display: inline-flex !important;
-            opacity: 1 !important;
-            pointer-events: auto !important;
-            transform: translateY(0) scale(1) !important;
-        }
-
-        /* Also show automatically if the button contains a real <a href> (if :has() supported) */
-        @supports(selector(:has(*))) {
-            .copy-btn:has(a[href]) {
-                display: inline-flex !important;
-                opacity: 1 !important;
-                pointer-events: auto !important;
-                transform: translateY(0) scale(1) !important;
-            }
-        }
-
-        /* Hover/focus polish only when visible */
-        .copy-btn.is-link:hover,
-        .copy-btn[data-copy-url]:not([data-copy-url=""]):hover,
-        .copy-btn:has(a[href]):hover {
-            transform: translateY(-4px) scale(1.03);
-            background: rgba(255, 255, 255, 0.12);
-            border-color: var(--blue);
-            box-shadow: 0 10px 22px rgba(0, 0, 0, 0.35);
-        }
-
-        /* Focus visible */
-        .copy-btn.is-link:focus-visible,
-        .copy-btn[data-copy-url]:not([data-copy-url=""]):focus-visible,
-        .copy-btn:has(a[href]):focus-visible {
-            outline: 3px solid rgba(0, 210, 255, 0.22);
-            outline-offset: 4px;
-        }
-
-        /* Keep hidden anchors readable by screen readers but visually clipped */
-        .copy-btn a[hidden] {
-            position: absolute;
-            width: 1px;
-            height: 1px;
-            overflow: hidden;
-            clip: rect(1px, 1px, 1px, 1px);
-            white-space: nowrap;
-        }
-
-        /* Optionally show copy button on card hover (only when visible by rules above) */
-        .card:hover .copy-btn.is-link,
-        .card:hover .copy-btn[data-copy-url]:not([data-copy-url=""]),
-        @supports(selector(:has(*))) {
-            .card:hover .copy-btn:has(a[href]) {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        /* ---------------------------
-   UTILITY POLISH
-   --------------------------- */
-
-        /* Make sure copy button sizing is responsive and consistent */
-        .copy-btn.is-link,
-        .copy-btn[data-copy-url]:not([data-copy-url=""]),
-        .copy-btn:has(a[href]) {
-            gap: clamp(6px, 1vw, 10px);
-            padding: clamp(10px, 1.2vw, 14px) clamp(14px, 1.8vw, 20px);
-            font-size: clamp(0.75rem, 1vw, 0.95rem);
-            border-radius: clamp(10px, 1.6vw, 14px);
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid var(--border);
-            color: var(--text);
-            align-items: center;
-        }
-
-        /* subtle reduced shadow on tiny screens */
-        @media (max-width: 420px) {
-
-            .copy-btn.is-link,
-            .copy-btn[data-copy-url]:not([data-copy-url=""]) {
-                box-shadow: 0 8px 18px rgba(0, 0, 0, 0.28);
-            }
-        }
-
-        /* ---------------------------
-   END - Full CSS
-   --------------------------- */
-    </style>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+<title>Sirsnoopy | Coder</title>
+<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/c0e9641a-6ab6-4aae-87ee-11a4ff2da95d.sketchpad%20(1).png" />
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+<style>
+:root{
+  --blue:#00d2ff;
+  --yellow:#ffde59;
+  --glass:rgba(15,20,35,0.75);
+  --border:rgba(255,255,255,0.15);
+  --text:#ffffff;
+  --muted:#cbd5e1;
+  --bg-fallback:url('https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg');
+  --smooth-medium:260ms;
+}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0;padding:0;font-family:'Plus Jakarta Sans',sans-serif;-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;color:var(--text)}
+body{display:flex;align-items:center;justify-content:center;min-height:100vh;padding:env(safe-area-inset-top,20px) env(safe-area-inset-right,20px) env(safe-area-inset-bottom,20px) env(safe-area-inset-left,20px);background:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45)),var(--bg-fallback);background-size:cover;background-position:center;overflow:auto}
+@media (min-width:1100px){ body{ background-attachment:fixed } }
+#bg-video{position:fixed;inset:0;width:100%;height:100%;object-fit:cover;z-index:-2;pointer-events:none}
+#bg-overlay{position:fixed;inset:0;background:linear-gradient(rgba(0,0,0,0.45),rgba(0,0,0,0.45));z-index:-1;pointer-events:none}
+.hide-video #bg-video{display:none}
+#context-menu{position:fixed;background:rgba(20,25,40,0.95);backdrop-filter:blur(12px);border:1px solid var(--border);border-radius:12px;padding:8px;width:180px;display:none;z-index:10005;box-shadow:0 10px 30px rgba(0,0,0,0.5)}
+.menu-item{padding:10px 14px;font-size:.85rem;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px}
+.menu-item:hover{background:rgba(255,255,255,0.06)}
+.menu-item:focus{outline:3px solid rgba(0,210,255,0.12)}
+.ripple{position:fixed;border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;background:rgba(255,255,255,0.16);animation:rippleAnim .56s cubic-bezier(.2,.9,.28,1) forwards;z-index:10006}
+@keyframes rippleAnim{0%{transform:translate(-50%,-50%) scale(0.02);opacity:0.9}60%{transform:translate(-50%,-50%) scale(0.8);opacity:0.45}100%{transform:translate(-50%,-50%) scale(4);opacity:0}}
+.container{width:100%;max-width:1100px;margin:0 auto;padding:12px;perspective:1500px;z-index:2}
+.card{width:100%;background:var(--glass);border:1px solid var(--border);border-radius:36px;padding:clamp(18px,3.5vw,48px);display:grid;grid-template-columns:1fr;gap:clamp(16px,3vw,40px);backdrop-filter:blur(28px) saturate(160%);-webkit-backdrop-filter:blur(28px) saturate(160%);box-shadow:0 40px 90px rgba(0,0,0,0.55);transform-style:preserve-3d;transition:transform .12s ease-out;position:relative;max-height:calc(100vh - 40px);overflow:auto;-webkit-overflow-scrolling:touch;will-change:transform}
+.card-glow{position:absolute;inset:0;background:radial-gradient(circle at var(--mouse-x,50%) var(--mouse-y,50%),rgba(255,255,255,0.08),transparent 45%);pointer-events:none;z-index:3;border-radius:inherit;transition:background-position 220ms linear,opacity 220ms ease}
+.profile-section{display:flex;flex-direction:column;align-items:center;gap:clamp(16px,2.6vw,30px);z-index:2;padding-bottom:4px}
+.pfp-outer{width:clamp(120px,20vw,230px);height:clamp(120px,20vw,230px);background:var(--yellow);border-radius:50%;padding:6px;box-shadow:0 20px 45px rgba(0,0,0,0.5);transition:transform .4s cubic-bezier(.175,.885,.32,1.275);flex-shrink:0}
+.pfp-outer:hover{transform:scale(1.04)}
+.pfp-inner{width:100%;height:100%;border-radius:50%;overflow:hidden;border:5px solid rgba(0,0,0,0.12)}
+.pfp-img{width:100%;height:100%;object-fit:cover;display:block;backface-visibility:hidden;-webkit-transform:translateZ(0)}
+.content-section{z-index:2;display:flex;flex-direction:column;gap:clamp(12px,2.2vw,28px)}
+.greeting{color:var(--blue);text-transform:uppercase;letter-spacing:3px;font-weight:800;font-size:.72rem;margin-bottom:6px;opacity:.95}
+.name-logo{max-width:320px;width:100%;filter:drop-shadow(0 8px 15px rgba(0,0,0,0.4));margin-bottom:6px}
+.typewriter-wrap{font-size:clamp(1rem,2.6vw,1.7rem);font-weight:700;min-height:1.4em;line-height:1.1;word-break:break-word}
+.bio{color:var(--muted);font-size:clamp(.95rem,1.9vw,1.05rem);line-height:1.7;background:rgba(0,0,0,0.28);padding:14px 18px;border-radius:16px;border:1px solid rgba(255,255,255,0.06);max-width:100%;overflow:auto}
+.info-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+.stat-box{background:rgba(255,255,255,0.04);padding:14px;border-radius:14px;border:1px solid var(--border);display:flex;align-items:center;gap:12px;transition:transform .28s ease,background .28s ease,border-color .28s ease}
+.stat-box:hover{transform:translateY(-6px);background:rgba(255,255,255,0.06);border-color:var(--blue)}
+.stat-box i{font-size:1.25rem;color:var(--blue)}
+.stat-val{font-weight:700;font-size:1rem;display:block}
+.stat-label{font-size:.72rem;color:var(--muted);text-transform:uppercase;letter-spacing:1px}
+.social-row{display:flex;gap:12px;flex-wrap:wrap;align-items:center}
+.social-btn{width:52px;height:52px;border-radius:12px;background:rgba(255,255,255,0.07);border:1px solid var(--border);color:white;font-size:1.2rem;display:grid;place-items:center;text-decoration:none;transition:transform .22s cubic-bezier(.175,.885,.32,1.275),box-shadow .22s}
+.social-btn:hover{transform:translateY(-8px) scale(1.06);box-shadow:0 12px 28px rgba(0,0,0,0.28)}
+@media (min-width:850px){.card{grid-template-columns:320px 1fr;align-items:center;gap:36px;padding:clamp(28px,3.8vw,56px)}.profile-section{border-right:1px solid var(--border);padding-right:36px}.content-section{padding-left:6px}}
+@media (max-width:600px){.card{padding:16px;border-radius:20px;gap:16px;max-height:calc(100vh - 20px)}.profile-section{border-right:none;padding:0}.social-row{justify-content:center}.name-logo{max-width:260px;margin:0 auto;display:block}.greeting{text-align:center}.pfp-outer{padding:4px}.social-btn{width:48px;height:48px;font-size:1.05rem;border-radius:10px}.bio{padding:12px;border-radius:12px}}
+@media (max-width:420px){.pfp-outer{width:clamp(96px,28vw,160px);height:clamp(96px,28vw,160px)}.typewriter-wrap{font-size:1.05rem}.stat-box{padding:11px;gap:10px}.info-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}.card{padding:12px;border-radius:16px}}
+a:focus-visible,button:focus-visible{outline:3px solid rgba(0,210,255,0.18);outline-offset:3px;border-radius:8px}
+@keyframes blink{50%{opacity:0}}
+*{transition-duration:var(--smooth-medium);transition-timing-function:cubic-bezier(.2,.9,.28,1)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
+.video-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);z-index:10010}
+.video-frame{position:absolute;inset:0;width:100%;height:100%}
+.video-frame iframe{width:100%;height:100%;border:0}
+.video-frame .close{position:absolute;right:12px;top:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px;border-radius:8px;cursor:pointer;z-index:3}
+.copy-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:6%;padding:10px 14px;border-radius:12px;background:rgba(12,12,12,0.9);color:#fff;font-weight:700;z-index:120000;box-shadow:0 12px 28px rgba(0,0,0,0.6)}
+</style>
 </head>
-
 <body>
+<video id="bg-video" autoplay muted loop playsinline preload="auto">
+  <source src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/background.mp4" type="video/mp4">
+  <source src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/background.webm" type="video/webm">
+</video>
+<div id="bg-overlay"></div>
 
-    <div id="context-menu">
-        <div class="menu-item" onclick="location.reload()"><i class="fa-solid fa-rotate"></i> Refresh Page</div>
-        <div class="menu-item" onclick="document.getElementById('context-menu').style.display='none'"><i class="fa-solid fa-xmark"></i> Close Menu</div>
+<div id="context-menu" aria-hidden="true" role="menu">
+  <div class="menu-item" id="ctx-refresh" role="menuitem" tabindex="0"><i class="fa-solid fa-rotate" aria-hidden="true"></i><span style="margin-left:8px">Refresh Page</span></div>
+  <div class="menu-item" id="ctx-close" role="menuitem" tabindex="0"><i class="fa-solid fa-xmark" aria-hidden="true"></i><span style="margin-left:8px">Close Menu</span></div>
+</div>
+
+<div class="container" id="tilt-container">
+  <main class="card" id="tilt-card" role="application" aria-label="Sirsnoopy profile card">
+    <div class="card-glow" id="glow" aria-hidden="true"></div>
+
+    <div class="profile-section">
+      <div class="pfp-outer" tabindex="0">
+        <div class="pfp-inner">
+          <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/c0e9641a-6ab6-4aae-87ee-11a4ff2da95d.sketchpad%20(1).png" alt="Sirsnoopy Avatar" class="pfp-img">
+        </div>
+      </div>
+
+      <div class="social-row">
+        <a href="https://github.com/code-andrewy" target="_blank" rel="noopener" class="social-btn btn-github" aria-label="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
+        <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" rel="noopener" class="social-btn btn-youtube" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
+        <a href="https://discord.com/users/1453900770524266516" target="_blank" rel="noopener" class="social-btn btn-discord" aria-label="Discord"><i class="fa-brands fa-discord" aria-hidden="true"></i></a>
+      </div>
     </div>
 
-    <div class="container" id="tilt-container">
-        <main class="card" id="tilt-card">
-            <div class="card-glow" id="glow"></div>
+    <div class="content-section">
+      <div>
+        <p class="greeting">Hello 👋 my name is</p>
+        <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/download__7_-removebg-preview.png" alt="Andrew" class="name-logo">
+      </div>
 
-            <div class="profile-section">
-                <div class="pfp-outer">
-                    <div class="pfp-inner">
-                        <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/c0e9641a-6ab6-4aae-87ee-11a4ff2da95d.sketchpad%20(1).png" alt="Sirsnoopy Avatar" class="pfp-img">
-                    </div>
-                </div>
-                <div class="social-row">
-                    <a href="https://github.com/code-andrewy" target="_blank" class="social-btn btn-github"><i class="fa-brands fa-github"></i></a>
-                    <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" class="social-btn btn-youtube"><i class="fa-brands fa-youtube"></i></a>
-                    <a href="https://discord.com/users/1453900770524266516" target="_blank" class="social-btn btn-discord"><i class="fa-brands fa-discord"></i></a>
-                </div>
-            </div>
+      <div class="typewriter-wrap" aria-live="polite">
+        Experience in <span id="typewriter" style="color:var(--blue)"></span><span style="border-left:3px solid var(--blue); margin-left:4px; animation:blink 0.8s infinite" aria-hidden="true"></span>
+      </div>
 
-            <div class="content-section">
-                <div>
-                    <p class="greeting">Hello 👋 my name is</p>
-                    <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/download__7_-removebg-preview.png" alt="Andrew" class="name-logo">
-                </div>
+      <p class="bio">A student who started coding at age 12. I make and find cool stuff</p>
 
-                <div class="typewriter-wrap">
-                    Experience in <span id="typewriter" style="color:var(--blue)"></span><span style="border-left:3px solid var(--blue); margin-left:4px; animation:blink 0.8s infinite"></span>
-                </div>
+      <div class="info-grid">
+        <div class="stat-box">
+          <i class="fa-regular fa-clock" aria-hidden="true"></i>
+          <div>
+            <span class="stat-val" id="time">00:00</span>
+            <span class="stat-label">Local Time</span>
+          </div>
+        </div>
 
-                <p class="bio">A student who started coding at age 12. I make and find cool stuff</p>
-
-                <div class="info-grid">
-                    <div class="stat-box">
-                        <i class="fa-regular fa-clock"></i>
-                        <div>
-                            <span class="stat-val" id="time">00:00</span>
-                            <span class="stat-label">Local Time</span>
-                        </div>
-                    </div>
-                    <div class="stat-box">
-                        <i class="fa-solid fa-cloud-sun"></i>
-                        <div>
-                            <span class="stat-val" id="temp">--°F</span>
-                            <span class="stat-label" id="cond">Loading...</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </main>
+        <div class="stat-box">
+          <i class="fa-solid fa-cloud-sun" aria-hidden="true"></i>
+          <div>
+            <span class="stat-val" id="temp">--°F</span>
+            <span class="stat-label" id="cond">Loading...</span>
+          </div>
+        </div>
+      </div>
     </div>
+  </main>
+</div>
 
-    <script>
-        /* -------------------------
-   Utilities & safety checks
-   ------------------------- */
-        const qs = (sel) => document.querySelector(sel);
-        const qsa = (sel) => Array.from(document.querySelectorAll(sel));
+<div class="video-modal" id="video-modal" aria-hidden="true">
+  <div class="video-frame" role="dialog" aria-modal="true" aria-label="Intro video">
+    <button class="close" id="video-close" aria-label="Close video">Close</button>
+    <iframe id="intro-iframe" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Intro video"></iframe>
+  </div>
+</div>
 
-        function safeGet(id) {
-            const el = document.getElementById(id);
-            return el || null;
-        }
+<script>
+const qs = s => document.querySelector(s);
+const qsa = s => Array.from(document.querySelectorAll(s));
+const card = qs('#tilt-card');
+const container = qs('#tilt-container');
+const menu = qs('#context-menu');
+const ctxRefresh = qs('#ctx-refresh');
+const ctxClose = qs('#ctx-close');
+const glow = qs('#glow');
+const bgVideo = qs('#bg-video');
+const videoModal = qs('#video-modal');
+const introIframe = qs('#intro-iframe');
+const videoClose = qs('#video-close');
 
-        /* -------------------------
-           Elements (null safe)
-           ------------------------- */
-        const card = safeGet('tilt-card');
-        const container = safeGet('tilt-container');
-        const menu = safeGet('context-menu');
+function showContext(x,y){
+  if(!menu) return;
+  const w = menu.offsetWidth || 180;
+  const h = menu.offsetHeight || 120;
+  const left = Math.min(Math.max(8, x), window.innerWidth - w - 8);
+  const top = Math.min(Math.max(8, y), window.innerHeight - h - 8);
+  menu.style.left = left + 'px';
+  menu.style.top = top + 'px';
+  menu.style.display = 'block';
+  menu.setAttribute('aria-hidden','false');
+  const first = menu.querySelector('.menu-item');
+  if(first) first.focus();
+}
+function hideContext(){ if(!menu) return; menu.style.display = 'none'; menu.setAttribute('aria-hidden','true'); }
 
-        /* -------------------------
-           Custom Right Click Menu
-           ------------------------- */
-        if (menu) {
-            window.addEventListener('contextmenu', (e) => {
-                e.preventDefault();
-                menu.style.display = 'block';
-                let x = e.clientX,
-                    y = e.clientY;
-                const menuW = 180,
-                    menuH = 150; // estimated bounds
-                if (x + menuW > window.innerWidth) x = Math.max(0, window.innerWidth - menuW);
-                if (y + menuH > window.innerHeight) y = Math.max(0, window.innerHeight - menuH);
-                menu.style.left = `${x}px`;
-                menu.style.top = `${y}px`;
-            });
-        } // else: no custom menu present, nothing to show
+window.addEventListener('contextmenu', e => { e.preventDefault(); showContext(e.clientX,e.clientY); });
+window.addEventListener('click', e => {
+  hideContext();
+  const r = document.createElement('div');
+  r.className = 'ripple';
+  r.style.left = e.clientX + 'px';
+  r.style.top = e.clientY + 'px';
+  r.style.width = '12px';
+  r.style.height = '12px';
+  document.body.appendChild(r);
+  setTimeout(()=>{ try{ r.remove() }catch(e){} }, 600);
+});
+window.addEventListener('keydown', e => {
+  if(e.key === 'Escape') hideContext();
+  if((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.classList.contains('menu-item')){
+    document.activeElement.click();
+    e.preventDefault();
+  }
+});
+if(ctxRefresh) ctxRefresh.addEventListener('click', ()=> location.reload());
+if(ctxClose) ctxClose.addEventListener('click', ()=> hideContext());
 
-        /* -------------------------
-           Close menu & ripple effect
-           ------------------------- */
-        window.addEventListener('click', (e) => {
-            if (menu) menu.style.display = 'none';
+let raf = null;
+let rotateX = 0, rotateY = 0;
+function applyTransform(){ if(card) card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`; raf = null; }
+function onPointerMove(e){
+  if(!card) return;
+  const rect = card.getBoundingClientRect();
+  const clientX = (e.clientX !== undefined) ? e.clientX : (e.touches && e.touches[0] && e.touches[0].clientX) || 0;
+  const clientY = (e.clientY !== undefined) ? e.clientY : (e.touches && e.touches[0] && e.touches[0].clientY) || 0;
+  const x = clientX - rect.left;
+  const y = clientY - rect.top;
+  const px = (x / Math.max(1, rect.width)) * 100;
+  const py = (y / Math.max(1, rect.height)) * 100;
+  if(glow){ glow.style.setProperty('--mouse-x', px + '%'); glow.style.setProperty('--mouse-y', py + '%'); }
+  if(window.innerWidth <= 768) return;
+  rotateX = (y - rect.height/2) / 25;
+  rotateY = ((rect.width/2) - x) / 25;
+  if(!raf) raf = requestAnimationFrame(applyTransform);
+}
+function onPointerLeave(){
+  rotateX = 0; rotateY = 0;
+  if(card) card.style.transition = "transform 0.8s cubic-bezier(0.23,1,0.32,1)";
+  if(!raf) raf = requestAnimationFrame(()=>{ applyTransform(); setTimeout(()=>{ if(card) card.style.transition = ""; }, 820); });
+}
+if(container && card){
+  container.addEventListener('pointermove', onPointerMove, {passive:true});
+  container.addEventListener('pointerleave', onPointerLeave);
+  container.addEventListener('touchend', onPointerLeave, {passive:true});
+}
 
-            // ripple
-            const ripple = document.createElement('div');
-            ripple.className = 'ripple';
-            // style must be provided in CSS; we just set position
-            ripple.style.position = 'fixed';
-            ripple.style.left = `${e.clientX}px`;
-            ripple.style.top = `${e.clientY}px`;
-            ripple.style.pointerEvents = 'none';
-            document.body.appendChild(ripple);
-            setTimeout(() => ripple.remove(), 500);
-        });
+const phrases = ["Modern UI","Web Apps","Cybersecurity","Scratch","JavaScript"];
+let pi = 0, pj = 0, deleting = false;
+function typeLoop(){
+  const t = qs('#typewriter'); if(!t) return;
+  const word = phrases[pi];
+  t.textContent = word.substring(0, Math.max(0,pj));
+  if(deleting) pj--; else pj++;
+  if(!deleting && pj > word.length){ deleting = true; setTimeout(typeLoop,2000); }
+  else if(deleting && pj < 0){ deleting = false; pi = (pi+1)%phrases.length; pj = 0; setTimeout(typeLoop,500); }
+  else setTimeout(typeLoop, deleting ? 40 : 90);
+}
+typeLoop();
 
-        /* -------------------------
-           3D Tilt Logic (null-safe)
-           ------------------------- */
-        if (container && card) {
-            container.addEventListener('mousemove', (e) => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.setProperty('--mouse-x', `${(x / rect.width) * 100}%`);
-                card.style.setProperty('--mouse-y', `${(y / rect.height) * 100}%`);
-                if (window.innerWidth > 768) {
-                    const rotateX = (y - (rect.height / 2)) / 25;
-                    const rotateY = ((rect.width / 2) - x) / 25;
-                    card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`;
-                }
-            });
+function updateTime(){
+  const el = qs('#time'); if(!el) return;
+  const now = new Date(); el.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+}
+updateTime(); setInterval(updateTime,1000);
 
-            container.addEventListener('mouseleave', () => {
-                if (!card) return;
-                card.style.transition = "transform 0.8s cubic-bezier(0.23, 1, 0.32, 1)";
-                card.style.transform = `rotateX(0deg) rotateY(0deg)`;
-                setTimeout(() => {
-                    card.style.transition = "transform 0.1s ease-out";
-                }, 800);
-            });
-        }
+async function fetchWeather(){
+  const tEl = qs('#temp'); const cEl = qs('#cond');
+  try{
+    const res = await fetch('https://api.weather.gov/points/43.1939,-71.5724');
+    if(!res.ok) throw new Error('points fetch failed');
+    const json = await res.json();
+    const url = json && json.properties && json.properties.forecastHourly;
+    if(!url) throw new Error('no forecast url');
+    const fr = await fetch(url);
+    if(!fr.ok) throw new Error('forecast fetch failed');
+    const fj = await fr.json();
+    const cur = fj && fj.properties && fj.properties.periods && fj.properties.periods[0];
+    if(cur){ if(tEl) tEl.textContent = `${cur.temperature}°F`; if(cEl) cEl.textContent = cur.shortForecast; return; }
+    throw new Error('no current forecast');
+  }catch(e){
+    if(tEl) tEl.textContent = '72°F';
+    if(cEl) cEl.textContent = 'Clear Skies';
+  }
+}
+fetchWeather();
 
-        /* -------------------------
-           Typewriter (fixed edge cases)
-           ------------------------- */
-        const phrases = ["Modern UI", "Web Apps", "Cybersecurity", "Scratch", "JavaScript"];
-        let i = 0,
-            j = 0,
-            isDeleting = false;
+let _allowedUrl = null;
+document.addEventListener('copy', ev => {
+  if(_allowedUrl){ try{ ev.preventDefault(); ev.clipboardData.setData('text/plain', _allowedUrl); }catch(e){} setTimeout(()=> _allowedUrl = null, 60); return; }
+  try{ ev.preventDefault(); }catch(e){} showToast('Copy blocked — use the "Copy URL" button.');
+});
+document.addEventListener('keydown', e => {
+  const isCopyHotkey = (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C');
+  if(isCopyHotkey){ try{ e.preventDefault(); }catch(e){} showToast('Copy blocked — use the "Copy URL" button.'); }
+});
+qsa('.copy-btn').forEach(btn => {
+  btn.addEventListener('click', async ev => {
+    ev.preventDefault();
+    let url = btn.getAttribute('data-copy-url') || btn.dataset.copyUrl;
+    if(!url){ const a = btn.querySelector('a'); url = a ? a.href : null; }
+    if(!url){ showToast('No URL found on this button.'); return; }
+    if(navigator.clipboard && navigator.clipboard.writeText){ try{ await navigator.clipboard.writeText(url); showToast('URL copied to clipboard'); return; }catch(e){} }
+    _allowedUrl = url;
+    try{
+      const ok = document.execCommand && document.execCommand('copy');
+      if(!ok){ _allowedUrl = null; try{ window.prompt('Copy the URL below (Ctrl+C / Cmd+C):', url); }catch(e){ showToast('Unable to copy automatically. Use the prompt.'); } }
+      else showToast('URL copied to clipboard (fallback)');
+    }catch(e){ _allowedUrl = null; try{ window.prompt('Copy the URL below (Ctrl+C / Cmd+C):', url); }catch(e){ showToast('Unable to copy automatically. Use the prompt.'); } }
+    setTimeout(()=> _allowedUrl = null, 300);
+  });
+});
 
-        function loop() {
-            const target = qs("#typewriter");
-            if (!target) return; // defensive
-            const currentWord = phrases[i];
-            target.textContent = currentWord.substring(0, Math.max(0, j));
-            if (isDeleting) {
-                j--;
-            } else {
-                j++;
-            }
-            if (!isDeleting && j > currentWord.length) {
-                isDeleting = true;
-                setTimeout(loop, 2000);
-            } else if (isDeleting && j < 0) {
-                isDeleting = false;
-                i = (i + 1) % phrases.length;
-                j = 0;
-                setTimeout(loop, 500);
-            } else {
-                setTimeout(loop, isDeleting ? 40 : 90);
-            }
-        }
-        loop();
+function showToast(msg, ms=1600){
+  const t = document.createElement('div'); t.className = 'copy-toast'; t.textContent = msg;
+  t.style.position = 'fixed'; t.style.left = '50%'; t.style.transform = 'translateX(-50%)';
+  t.style.bottom = '12%'; t.style.padding = '8px 12px'; t.style.borderRadius = '8px';
+  t.style.background = 'rgba(20,20,20,0.9)'; t.style.color = '#fff'; t.style.zIndex = 99999; t.style.fontFamily = 'system-ui, sans-serif';
+  document.body.appendChild(t); setTimeout(()=>{ try{ t.remove() }catch(e){} }, ms);
+}
 
-        /* -------------------------
-           Time
-           ------------------------- */
-        function updateTime() {
-            const now = new Date();
-            const el = safeGet('time');
-            if (!el) return;
-            el.textContent = now.toLocaleTimeString([], {
-                hour: '2-digit',
-                minute: '2-digit'
-            });
-        }
-        setInterval(updateTime, 1000);
-        updateTime();
+const VIDEO_KEY = 'sirsnoopy_first_load_video_shown_v4';
+const VIDEO_ID = 'hUQX2B67KL4';
+const START_SEC = 15;
+function openVideo(){
+  if(!videoModal || !introIframe) return;
+  introIframe.src = `https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&mute=1&start=${START_SEC}&rel=0&modestbranding=1&playsinline=1`;
+  videoModal.style.display = 'flex';
+  videoModal.setAttribute('aria-hidden','false');
+  document.documentElement.style.overflow = 'hidden';
+  document.body.style.overflow = 'hidden';
+}
+function closeVideo(){
+  if(!videoModal || !introIframe) return;
+  introIframe.src = '';
+  videoModal.style.display = 'none';
+  videoModal.setAttribute('aria-hidden','true');
+  document.documentElement.style.overflow = '';
+  document.body.style.overflow = '';
+}
+if(videoClose) videoClose.addEventListener('click', ()=>{ closeVideo(); try{ localStorage.setItem(VIDEO_KEY,'1') }catch(e){} });
+document.addEventListener('keydown', e => { if(e.key === 'Escape' && videoModal && videoModal.style.display === 'flex'){ closeVideo(); try{ localStorage.setItem(VIDEO_KEY,'1') }catch(e){} } });
 
-        /* -------------------------
-           Weather Fetch (safe fallback)
-           ------------------------- */
-        async function fetchWeather() {
-            const tempEl = safeGet('temp');
-            const condEl = safeGet('cond');
-            try {
-                const res = await fetch('https://api.weather.gov/points/43.1939,-71.5724');
-                if (!res.ok) throw new Error('points fetch failed');
-                const data = await res.json();
-                const forecastUrl = data?.properties?.forecastHourly;
-                if (!forecastUrl) throw new Error('no forecast URL');
-                const forecastRes = await fetch(forecastUrl);
-                if (!forecastRes.ok) throw new Error('forecast fetch failed');
-                const forecastData = await forecastRes.json();
-                const current = forecastData?.properties?.periods?.[0];
-                if (!current) throw new Error('no forecast periods');
-                if (tempEl) tempEl.textContent = `${current.temperature}°F`;
-                if (condEl) condEl.textContent = current.shortForecast;
-            } catch (e) {
-                if (tempEl) tempEl.textContent = "72°F";
-                if (condEl) condEl.textContent = "Clear Skies";
-                // console.warn('Weather fallback used:', e);
-            }
-        }
-        fetchWeather();
+function shouldDisableBgVideo(){
+  try{
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+    if(navigator.connection){
+      if(navigator.connection.saveData) return true;
+      const t = navigator.connection.effectiveType || '';
+      if(/2g|slow-2g/.test(t)) return true;
+    }
+  }catch(e){}
+  return false;
+}
+if(shouldDisableBgVideo()) document.documentElement.classList.add('hide-video');
 
-        /* -------------------------
-           Copy control: allow ONLY via copy buttons
-           ------------------------- */
-        let _allowedUrlForImmediateCopy = null; // set briefly when using execCommand fallback
-
-        // Global copy handler: blocks copies unless allowedUrl is set
-        document.addEventListener('copy', (ev) => {
-            if (_allowedUrlForImmediateCopy) {
-                // Put the allowed URL on the clipboard
-                ev.preventDefault();
-                ev.clipboardData.setData('text/plain', _allowedUrlForImmediateCopy);
-                // Clear quickly
-                setTimeout(() => _allowedUrlForImmediateCopy = null, 50);
-                return;
-            }
-            // Block all other copy attempts
-            ev.preventDefault();
-            showToast('Copy blocked — use the "Copy URL" button.');
-        });
-
-        // Block Ctrl/Meta+C keyboard copy unless it was just triggered by copy button fallback
-        document.addEventListener('keydown', (e) => {
-            const isCopyHotkey = (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C');
-            if (isCopyHotkey) {
-                // prevent generic copying
-                e.preventDefault();
-                showToast('Copy blocked — use the "Copy URL" button.');
-            }
-        });
-
-        // Copy button logic: buttons must have .copy-btn and either data-copy-url or an <a> inside
-        qsa('.copy-btn').forEach(btn => {
-            btn.addEventListener('click', async (e) => {
-                e.preventDefault();
-                // prefer data-copy-url
-                let url = btn.getAttribute('data-copy-url') || btn.dataset.copyUrl;
-                if (!url) {
-                    const a = btn.querySelector('a');
-                    url = a ? a.href : null;
-                }
-                if (!url) {
-                    showToast('No URL found on this button.');
-                    return;
-                }
-
-                // Try navigator.clipboard first (modern)
-                if (navigator.clipboard && navigator.clipboard.writeText) {
-                    try {
-                        await navigator.clipboard.writeText(url);
-                        showToast('URL copied to clipboard');
-                        return;
-                    } catch (err) {
-                        // fallback below
-                    }
-                }
-
-                // Fallback for older browsers: temporarily allow the copy event and use execCommand
-                _allowedUrlForImmediateCopy = url;
-                const success = document.execCommand && document.execCommand('copy');
-                // If execCommand didn't fire copy event, use prompt fallback
-                if (!success) {
-                    _allowedUrlForImmediateCopy = null;
-                    try {
-                        // final fallback: open a prompt where user can select/copy manually
-                        window.prompt('Copy the URL below (Ctrl+C / Cmd+C):', url);
-                    } catch (err) {
-                        showToast('Unable to copy automatically. Use the prompt.');
-                    }
-                } else {
-                    showToast('URL copied to clipboard (fallback)');
-                }
-                // clear allowed flag after a short delay just in case
-                setTimeout(() => _allowedUrlForImmediateCopy = null, 300);
-            });
-        });
-
-        /* -------------------------
-           Helper: small toast notifications
-           ------------------------- */
-        function showToast(msg, ms = 1600) {
-            const t = document.createElement('div');
-            t.className = 'copy-toast';
-            t.textContent = msg;
-            // basic inline styles so it'll work even without your CSS
-            t.style.position = 'fixed';
-            t.style.left = '50%';
-            t.style.transform = 'translateX(-50%)';
-            t.style.bottom = '12%';
-            t.style.padding = '8px 12px';
-            t.style.borderRadius = '8px';
-            t.style.background = 'rgba(20,20,20,0.9)';
-            t.style.color = '#fff';
-            t.style.zIndex = 99999;
-            t.style.fontFamily = 'system-ui, sans-serif';
-            document.body.appendChild(t);
-            setTimeout(() => t.remove(), ms);
-        }
-
-        /* -------------------------
-           End of script
-           ------------------------- */
-    </script>
+document.addEventListener('DOMContentLoaded', ()=>{
+  try{
+    const shown = localStorage.getItem(VIDEO_KEY);
+    if(!shown) openVideo();
+  }catch(e){
+    openVideo();
+  }
+});
+</script>
 </body>
-
 </html>
