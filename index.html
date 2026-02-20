@@ -56,13 +56,8 @@ body{display:flex;align-items:center;justify-content:center;min-height:100vh;pad
 @media (min-width:850px){.card{grid-template-columns:320px 1fr;align-items:center;gap:36px;padding:clamp(28px,3.8vw,56px)}.profile-section{border-right:1px solid var(--border);padding-right:36px}.content-section{padding-left:6px}}
 @media (max-width:600px){.card{padding:16px;border-radius:20px;gap:16px;max-height:calc(100vh - 20px)}.profile-section{border-right:none;padding:0}.social-row{justify-content:center}.name-logo{max-width:260px;margin:0 auto;display:block}.greeting{text-align:center}.pfp-outer{padding:4px}.social-btn{width:48px;height:48px;font-size:1.05rem;border-radius:10px}.bio{padding:12px;border-radius:12px}}
 @media (max-width:420px){.pfp-outer{width:clamp(96px,28vw,160px);height:clamp(96px,28vw,160px)}.typewriter-wrap{font-size:1.05rem}.stat-box{padding:11px;gap:10px}.info-grid{grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}.card{padding:12px;border-radius:16px}}
-a:focus-visible,button:focus-visible{outline:3px solid rgba(0,210,255,0.18);outline-offset:3px;border-radius:8px}
-@keyframes blink{50%{opacity:0}}
-*{transition-duration:var(--smooth-medium);transition-timing-function:cubic-bezier(.2,.9,.28,1)}
-@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important;scroll-behavior:auto!important}}
 .video-modal{position:fixed;inset:0;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,0.95);z-index:10010}
-.video-frame{position:absolute;inset:0;width:100%;height:100%}
-.video-frame iframe{width:100%;height:100%;border:0}
+.video-frame{position:absolute;inset:0;width:100%;height:100%;margin:auto;border-radius:0;overflow:hidden}
 .video-frame .close{position:absolute;right:12px;top:12px;background:rgba(255,255,255,0.06);border:1px solid rgba(255,255,255,0.06);color:#fff;padding:8px;border-radius:8px;cursor:pointer;z-index:3}
 .copy-toast{position:fixed;left:50%;transform:translateX(-50%);bottom:6%;padding:10px 14px;border-radius:12px;background:rgba(12,12,12,0.9);color:#fff;font-weight:700;z-index:120000;box-shadow:0 12px 28px rgba(0,0,0,0.6)}
 </style>
@@ -73,42 +68,34 @@ a:focus-visible,button:focus-visible{outline:3px solid rgba(0,210,255,0.18);outl
   <source src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/background.webm" type="video/webm">
 </video>
 <div id="bg-overlay"></div>
-
 <div id="context-menu" aria-hidden="true" role="menu">
   <div class="menu-item" id="ctx-refresh" role="menuitem" tabindex="0"><i class="fa-solid fa-rotate" aria-hidden="true"></i><span style="margin-left:8px">Refresh Page</span></div>
   <div class="menu-item" id="ctx-close" role="menuitem" tabindex="0"><i class="fa-solid fa-xmark" aria-hidden="true"></i><span style="margin-left:8px">Close Menu</span></div>
 </div>
-
 <div class="container" id="tilt-container">
   <main class="card" id="tilt-card" role="application" aria-label="Sirsnoopy profile card">
     <div class="card-glow" id="glow" aria-hidden="true"></div>
-
     <div class="profile-section">
       <div class="pfp-outer" tabindex="0">
         <div class="pfp-inner">
           <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/c0e9641a-6ab6-4aae-87ee-11a4ff2da95d.sketchpad%20(1).png" alt="Sirsnoopy Avatar" class="pfp-img">
         </div>
       </div>
-
       <div class="social-row">
         <a href="https://github.com/code-andrewy" target="_blank" rel="noopener" class="social-btn btn-github" aria-label="GitHub"><i class="fa-brands fa-github" aria-hidden="true"></i></a>
         <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" rel="noopener" class="social-btn btn-youtube" aria-label="YouTube"><i class="fa-brands fa-youtube" aria-hidden="true"></i></a>
         <a href="https://discord.com/users/1453900770524266516" target="_blank" rel="noopener" class="social-btn btn-discord" aria-label="Discord"><i class="fa-brands fa-discord" aria-hidden="true"></i></a>
       </div>
     </div>
-
     <div class="content-section">
       <div>
         <p class="greeting">Hello 👋 my name is</p>
         <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/download__7_-removebg-preview.png" alt="Andrew" class="name-logo">
       </div>
-
       <div class="typewriter-wrap" aria-live="polite">
         Experience in <span id="typewriter" style="color:var(--blue)"></span><span style="border-left:3px solid var(--blue); margin-left:4px; animation:blink 0.8s infinite" aria-hidden="true"></span>
       </div>
-
       <p class="bio">A student who started coding at age 12. I make and find cool stuff</p>
-
       <div class="info-grid">
         <div class="stat-box">
           <i class="fa-regular fa-clock" aria-hidden="true"></i>
@@ -117,7 +104,6 @@ a:focus-visible,button:focus-visible{outline:3px solid rgba(0,210,255,0.18);outl
             <span class="stat-label">Local Time</span>
           </div>
         </div>
-
         <div class="stat-box">
           <i class="fa-solid fa-cloud-sun" aria-hidden="true"></i>
           <div>
@@ -129,211 +115,282 @@ a:focus-visible,button:focus-visible{outline:3px solid rgba(0,210,255,0.18);outl
     </div>
   </main>
 </div>
-
 <div class="video-modal" id="video-modal" aria-hidden="true">
   <div class="video-frame" role="dialog" aria-modal="true" aria-label="Intro video">
     <button class="close" id="video-close" aria-label="Close video">Close</button>
-    <iframe id="intro-iframe" src="" allow="autoplay; encrypted-media; picture-in-picture" allowfullscreen title="Intro video"></iframe>
+    <div id="intro-player" style="width:100%;height:100%;"></div>
   </div>
 </div>
-
 <script>
-const qs = s => document.querySelector(s);
-const qsa = s => Array.from(document.querySelectorAll(s));
-const card = qs('#tilt-card');
-const container = qs('#tilt-container');
-const menu = qs('#context-menu');
-const ctxRefresh = qs('#ctx-refresh');
-const ctxClose = qs('#ctx-close');
-const glow = qs('#glow');
-const bgVideo = qs('#bg-video');
-const videoModal = qs('#video-modal');
-const introIframe = qs('#intro-iframe');
-const videoClose = qs('#video-close');
-
+const qs = s => document.querySelector(s)
+const qsa = s => Array.from(document.querySelectorAll(s))
+const card = qs('#tilt-card')
+const container = qs('#tilt-container')
+const menu = qs('#context-menu')
+const ctxRefresh = qs('#ctx-refresh')
+const ctxClose = qs('#ctx-close')
+const glow = qs('#glow')
+const bgVideo = qs('#bg-video')
+const videoModal = qs('#video-modal')
+const playerContainer = qs('#intro-player')
+const videoClose = qs('#video-close')
 function showContext(x,y){
-  if(!menu) return;
-  const w = menu.offsetWidth || 180;
-  const h = menu.offsetHeight || 120;
-  const left = Math.min(Math.max(8, x), window.innerWidth - w - 8);
-  const top = Math.min(Math.max(8, y), window.innerHeight - h - 8);
-  menu.style.left = left + 'px';
-  menu.style.top = top + 'px';
-  menu.style.display = 'block';
-  menu.setAttribute('aria-hidden','false');
-  const first = menu.querySelector('.menu-item');
-  if(first) first.focus();
+  if(!menu) return
+  const w = menu.offsetWidth || 180
+  const h = menu.offsetHeight || 120
+  const left = Math.min(Math.max(8, x), window.innerWidth - w - 8)
+  const top = Math.min(Math.max(8, y), window.innerHeight - h - 8)
+  menu.style.left = left + 'px'
+  menu.style.top = top + 'px'
+  menu.style.display = 'block'
+  menu.setAttribute('aria-hidden','false')
+  const first = menu.querySelector('.menu-item')
+  if(first) first.focus()
 }
-function hideContext(){ if(!menu) return; menu.style.display = 'none'; menu.setAttribute('aria-hidden','true'); }
-
-window.addEventListener('contextmenu', e => { e.preventDefault(); showContext(e.clientX,e.clientY); });
+function hideContext(){ if(!menu) return; menu.style.display = 'none'; menu.setAttribute('aria-hidden','true') }
+window.addEventListener('contextmenu', e => { e.preventDefault(); showContext(e.clientX,e.clientY) })
 window.addEventListener('click', e => {
-  hideContext();
-  const r = document.createElement('div');
-  r.className = 'ripple';
-  r.style.left = e.clientX + 'px';
-  r.style.top = e.clientY + 'px';
-  r.style.width = '12px';
-  r.style.height = '12px';
-  document.body.appendChild(r);
-  setTimeout(()=>{ try{ r.remove() }catch(e){} }, 600);
-});
+  hideContext()
+  const r = document.createElement('div')
+  r.className = 'ripple'
+  r.style.left = e.clientX + 'px'
+  r.style.top = e.clientY + 'px'
+  r.style.width = '12px'
+  r.style.height = '12px'
+  document.body.appendChild(r)
+  setTimeout(()=>{ try{ r.remove() }catch(e){} }, 600)
+})
 window.addEventListener('keydown', e => {
-  if(e.key === 'Escape') hideContext();
-  if((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.classList.contains('menu-item')){
-    document.activeElement.click();
-    e.preventDefault();
+  if(e.key === 'Escape'){
+    hideContext()
+    if(videoModal && videoModal.style.display === 'flex'){ closeVideo(true) }
   }
-});
-if(ctxRefresh) ctxRefresh.addEventListener('click', ()=> location.reload());
-if(ctxClose) ctxClose.addEventListener('click', ()=> hideContext());
-
-let raf = null;
-let rotateX = 0, rotateY = 0;
-function applyTransform(){ if(card) card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`; raf = null; }
+  if((e.key === 'Enter' || e.key === ' ') && document.activeElement && document.activeElement.classList.contains('menu-item')){
+    document.activeElement.click()
+    e.preventDefault()
+  }
+})
+if(ctxRefresh) ctxRefresh.addEventListener('click', ()=> location.reload())
+if(ctxClose) ctxClose.addEventListener('click', ()=> hideContext())
+let raf = null
+let rotateX = 0, rotateY = 0
+function applyTransform(){ if(card) card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`; raf = null }
 function onPointerMove(e){
-  if(!card) return;
-  const rect = card.getBoundingClientRect();
-  const clientX = (e.clientX !== undefined) ? e.clientX : (e.touches && e.touches[0] && e.touches[0].clientX) || 0;
-  const clientY = (e.clientY !== undefined) ? e.clientY : (e.touches && e.touches[0] && e.touches[0].clientY) || 0;
-  const x = clientX - rect.left;
-  const y = clientY - rect.top;
-  const px = (x / Math.max(1, rect.width)) * 100;
-  const py = (y / Math.max(1, rect.height)) * 100;
-  if(glow){ glow.style.setProperty('--mouse-x', px + '%'); glow.style.setProperty('--mouse-y', py + '%'); }
-  if(window.innerWidth <= 768) return;
-  rotateX = (y - rect.height/2) / 25;
-  rotateY = ((rect.width/2) - x) / 25;
-  if(!raf) raf = requestAnimationFrame(applyTransform);
+  if(!card) return
+  const rect = card.getBoundingClientRect()
+  const clientX = (e.clientX !== undefined) ? e.clientX : (e.touches && e.touches[0] && e.touches[0].clientX) || 0
+  const clientY = (e.clientY !== undefined) ? e.clientY : (e.touches && e.touches[0] && e.touches[0].clientY) || 0
+  const x = clientX - rect.left
+  const y = clientY - rect.top
+  const px = (x / Math.max(1, rect.width)) * 100
+  const py = (y / Math.max(1, rect.height)) * 100
+  if(glow){ glow.style.setProperty('--mouse-x', px + '%'); glow.style.setProperty('--mouse-y', py + '%') }
+  if(window.innerWidth <= 768) return
+  rotateX = (y - rect.height/2) / 25
+  rotateY = ((rect.width/2) - x) / 25
+  if(!raf) raf = requestAnimationFrame(applyTransform)
 }
 function onPointerLeave(){
-  rotateX = 0; rotateY = 0;
-  if(card) card.style.transition = "transform 0.8s cubic-bezier(0.23,1,0.32,1)";
-  if(!raf) raf = requestAnimationFrame(()=>{ applyTransform(); setTimeout(()=>{ if(card) card.style.transition = ""; }, 820); });
+  rotateX = 0; rotateY = 0
+  if(card) card.style.transition = "transform 0.8s cubic-bezier(0.23,1,0.32,1)"
+  if(!raf) raf = requestAnimationFrame(()=>{ applyTransform(); setTimeout(()=>{ if(card) card.style.transition = ""; }, 820) })
 }
 if(container && card){
-  container.addEventListener('pointermove', onPointerMove, {passive:true});
-  container.addEventListener('pointerleave', onPointerLeave);
-  container.addEventListener('touchend', onPointerLeave, {passive:true});
+  container.addEventListener('pointermove', onPointerMove, {passive:true})
+  container.addEventListener('pointerleave', onPointerLeave)
+  container.addEventListener('touchend', onPointerLeave, {passive:true})
 }
-
-const phrases = ["Modern UI","Web Apps","Cybersecurity","Scratch","JavaScript"];
-let pi = 0, pj = 0, deleting = false;
+const phrases = ["Modern UI","Web Apps","Cybersecurity","Scratch","JavaScript"]
+let pi = 0, pj = 0, deleting = false
 function typeLoop(){
-  const t = qs('#typewriter'); if(!t) return;
-  const word = phrases[pi];
-  t.textContent = word.substring(0, Math.max(0,pj));
-  if(deleting) pj--; else pj++;
-  if(!deleting && pj > word.length){ deleting = true; setTimeout(typeLoop,2000); }
-  else if(deleting && pj < 0){ deleting = false; pi = (pi+1)%phrases.length; pj = 0; setTimeout(typeLoop,500); }
-  else setTimeout(typeLoop, deleting ? 40 : 90);
+  const t = qs('#typewriter'); if(!t) return
+  const word = phrases[pi]
+  t.textContent = word.substring(0, Math.max(0,pj))
+  if(deleting) pj--; else pj++
+  if(!deleting && pj > word.length){ deleting = true; setTimeout(typeLoop,2000) }
+  else if(deleting && pj < 0){ deleting = false; pi = (pi+1)%phrases.length; pj = 0; setTimeout(typeLoop,500) }
+  else setTimeout(typeLoop, deleting ? 40 : 90)
 }
-typeLoop();
-
+typeLoop()
 function updateTime(){
-  const el = qs('#time'); if(!el) return;
-  const now = new Date(); el.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'});
+  const el = qs('#time'); if(!el) return
+  const now = new Date(); el.textContent = now.toLocaleTimeString([], {hour:'2-digit', minute:'2-digit'})
 }
-updateTime(); setInterval(updateTime,1000);
-
+updateTime(); setInterval(updateTime,1000)
 async function fetchWeather(){
-  const tEl = qs('#temp'); const cEl = qs('#cond');
+  const tEl = qs('#temp'); const cEl = qs('#cond')
   try{
-    const res = await fetch('https://api.weather.gov/points/43.1939,-71.5724');
-    if(!res.ok) throw new Error('points fetch failed');
-    const json = await res.json();
-    const url = json && json.properties && json.properties.forecastHourly;
-    if(!url) throw new Error('no forecast url');
-    const fr = await fetch(url);
-    if(!fr.ok) throw new Error('forecast fetch failed');
-    const fj = await fr.json();
-    const cur = fj && fj.properties && fj.properties.periods && fj.properties.periods[0];
-    if(cur){ if(tEl) tEl.textContent = `${cur.temperature}°F`; if(cEl) cEl.textContent = cur.shortForecast; return; }
-    throw new Error('no current forecast');
+    const res = await fetch('https://api.weather.gov/points/43.1939,-71.5724')
+    if(!res.ok) throw new Error('points fetch failed')
+    const json = await res.json()
+    const url = json && json.properties && json.properties.forecastHourly
+    if(!url) throw new Error('no forecast url')
+    const fr = await fetch(url)
+    if(!fr.ok) throw new Error('forecast fetch failed')
+    const fj = await fr.json()
+    const cur = (fj && fj.properties && fj.properties.periods && fj.properties.periods[0]) || (fj && fj.features && fj.features[0] && fj.features[0].properties)
+    if(cur){
+      if(cur.temperature !== undefined) { if(tEl) tEl.textContent = `${cur.temperature}°F` }
+      if(cur.shortForecast) { if(cEl) cEl.textContent = cur.shortForecast }
+      return
+    }
+    throw new Error('no current forecast')
   }catch(e){
-    if(tEl) tEl.textContent = '72°F';
-    if(cEl) cEl.textContent = 'Clear Skies';
+    if(tEl) tEl.textContent = '72°F'
+    if(cEl) cEl.textContent = 'Clear Skies'
   }
 }
-fetchWeather();
-
-let _allowedUrl = null;
+fetchWeather()
+let _allowedUrl = null
 document.addEventListener('copy', ev => {
-  if(_allowedUrl){ try{ ev.preventDefault(); ev.clipboardData.setData('text/plain', _allowedUrl); }catch(e){} setTimeout(()=> _allowedUrl = null, 60); return; }
-  try{ ev.preventDefault(); }catch(e){} showToast('Copy blocked — use the "Copy URL" button.');
-});
+  if(_allowedUrl){ try{ ev.preventDefault(); ev.clipboardData.setData('text/plain', _allowedUrl) }catch(e){} setTimeout(()=> _allowedUrl = null, 60); return }
+  try{ ev.preventDefault() }catch(e){} showToast('Copy blocked — use the "Copy URL" button.')
+})
 document.addEventListener('keydown', e => {
-  const isCopyHotkey = (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C');
-  if(isCopyHotkey){ try{ e.preventDefault(); }catch(e){} showToast('Copy blocked — use the "Copy URL" button.'); }
-});
+  const isCopyHotkey = (e.ctrlKey || e.metaKey) && (e.key === 'c' || e.key === 'C')
+  if(isCopyHotkey){ try{ e.preventDefault() }catch(e){} showToast('Copy blocked — use the "Copy URL" button.') }
+})
 qsa('.copy-btn').forEach(btn => {
   btn.addEventListener('click', async ev => {
-    ev.preventDefault();
-    let url = btn.getAttribute('data-copy-url') || btn.dataset.copyUrl;
-    if(!url){ const a = btn.querySelector('a'); url = a ? a.href : null; }
-    if(!url){ showToast('No URL found on this button.'); return; }
-    if(navigator.clipboard && navigator.clipboard.writeText){ try{ await navigator.clipboard.writeText(url); showToast('URL copied to clipboard'); return; }catch(e){} }
-    _allowedUrl = url;
+    ev.preventDefault()
+    let url = btn.getAttribute('data-copy-url') || btn.dataset.copyUrl
+    if(!url){ const a = btn.querySelector('a'); url = a ? a.href : null }
+    if(!url){ showToast('No URL found on this button.'); return }
+    if(navigator.clipboard && navigator.clipboard.writeText){ try{ await navigator.clipboard.writeText(url); showToast('URL copied to clipboard'); return }catch(e){} }
+    _allowedUrl = url
     try{
-      const ok = document.execCommand && document.execCommand('copy');
-      if(!ok){ _allowedUrl = null; try{ window.prompt('Copy the URL below (Ctrl+C / Cmd+C):', url); }catch(e){ showToast('Unable to copy automatically. Use the prompt.'); } }
-      else showToast('URL copied to clipboard (fallback)');
-    }catch(e){ _allowedUrl = null; try{ window.prompt('Copy the URL below (Ctrl+C / Cmd+C):', url); }catch(e){ showToast('Unable to copy automatically. Use the prompt.'); } }
-    setTimeout(()=> _allowedUrl = null, 300);
-  });
-});
-
+      const ok = document.execCommand && document.execCommand('copy')
+      if(!ok){ _allowedUrl = null; try{ window.prompt('Copy the URL below (Ctrl+C / Cmd+C):', url) }catch(e){ showToast('Unable to copy automatically. Use the prompt.') } }
+      else showToast('URL copied to clipboard (fallback)')
+    }catch(e){ _allowedUrl = null; try{ window.prompt('Copy the URL below (Ctrl+C / Cmd+C):', url) }catch(e){ showToast('Unable to copy automatically. Use the prompt.') } }
+    setTimeout(()=> _allowedUrl = null, 300)
+  })
+})
 function showToast(msg, ms=1600){
-  const t = document.createElement('div'); t.className = 'copy-toast'; t.textContent = msg;
-  t.style.position = 'fixed'; t.style.left = '50%'; t.style.transform = 'translateX(-50%)';
-  t.style.bottom = '12%'; t.style.padding = '8px 12px'; t.style.borderRadius = '8px';
-  t.style.background = 'rgba(20,20,20,0.9)'; t.style.color = '#fff'; t.style.zIndex = 99999; t.style.fontFamily = 'system-ui, sans-serif';
-  document.body.appendChild(t); setTimeout(()=>{ try{ t.remove() }catch(e){} }, ms);
+  const t = document.createElement('div'); t.className = 'copy-toast'; t.textContent = msg
+  t.style.position = 'fixed'; t.style.left = '50%'; t.style.transform = 'translateX(-50%)'
+  t.style.bottom = '12%'; t.style.padding = '8px 12px'; t.style.borderRadius = '8px'
+  t.style.background = 'rgba(20,20,20,0.9)'; t.style.color = '#fff'; t.style.zIndex = 99999; t.style.fontFamily = 'system-ui, sans-serif'
+  document.body.appendChild(t); setTimeout(()=>{ try{ t.remove() }catch(e){} }, ms)
 }
-
-const VIDEO_KEY = 'sirsnoopy_first_load_video_shown_v4';
-const VIDEO_ID = 'hUQX2B67KL4';
-const START_SEC = 15;
-function openVideo(){
-  if(!videoModal || !introIframe) return;
-  introIframe.src = `https://www.youtube.com/embed/${VIDEO_ID}?autoplay=1&mute=1&start=${START_SEC}&rel=0&modestbranding=1&playsinline=1`;
-  videoModal.style.display = 'flex';
-  videoModal.setAttribute('aria-hidden','false');
-  document.documentElement.style.overflow = 'hidden';
-  document.body.style.overflow = 'hidden';
-}
-function closeVideo(){
-  if(!videoModal || !introIframe) return;
-  introIframe.src = '';
-  videoModal.style.display = 'none';
-  videoModal.setAttribute('aria-hidden','true');
-  document.documentElement.style.overflow = '';
-  document.body.style.overflow = '';
-}
-if(videoClose) videoClose.addEventListener('click', ()=>{ closeVideo(); try{ localStorage.setItem(VIDEO_KEY,'1') }catch(e){} });
-document.addEventListener('keydown', e => { if(e.key === 'Escape' && videoModal && videoModal.style.display === 'flex'){ closeVideo(); try{ localStorage.setItem(VIDEO_KEY,'1') }catch(e){} } });
-
 function shouldDisableBgVideo(){
   try{
-    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true;
+    if(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return true
     if(navigator.connection){
-      if(navigator.connection.saveData) return true;
-      const t = navigator.connection.effectiveType || '';
-      if(/2g|slow-2g/.test(t)) return true;
+      if(navigator.connection.saveData) return true
+      const t = navigator.connection.effectiveType || ''
+      if(/2g|slow-2g/.test(t)) return true
     }
   }catch(e){}
-  return false;
+  return false
 }
-if(shouldDisableBgVideo()) document.documentElement.classList.add('hide-video');
-
+if(shouldDisableBgVideo()) document.documentElement.classList.add('hide-video')
+const VIDEO_KEY = 'sirsnoopy_first_load_video_shown_v4'
+const VIDEO_ID = 'hUQX2B67KL4'
+const START_SEC = 15
+let ytApiReady = false
+let ytPlayer = null
+let pendingOpen = false
+;(function loadYouTubeAPI(){
+  if(window.YT && window.YT.Player){ ytApiReady = true; return }
+  if(document.querySelector('script[data-yt-api]')) return
+  const tag = document.createElement('script')
+  tag.src = "https://www.youtube.com/iframe_api"
+  tag.setAttribute('data-yt-api', '1')
+  document.head.appendChild(tag)
+})()
+window.onYouTubeIframeAPIReady = function(){
+  ytApiReady = true
+  if(pendingOpen){ createOrLoadPlayer(true); pendingOpen = false }
+}
+function createOrLoadPlayer(playImmediately = false){
+  if(ytPlayer && typeof ytPlayer.loadVideoById === 'function'){
+    try{
+      ytPlayer.loadVideoById({videoId: VIDEO_ID, startSeconds: START_SEC})
+      if(playImmediately && typeof ytPlayer.playVideo === 'function') ytPlayer.playVideo()
+      return
+    }catch(e){
+      try{ ytPlayer.destroy() }catch(e){}
+      ytPlayer = null
+    }
+  }
+  if(!playerContainer) return
+  playerContainer.innerHTML = ''
+  if(window.YT && YT.Player){
+    ytPlayer = new YT.Player('intro-player', {
+      height: '100%',
+      width: '100%',
+      videoId: VIDEO_ID,
+      playerVars: {
+        autoplay: 1,
+        mute: 1,
+        start: START_SEC,
+        rel: 0,
+        modestbranding: 1,
+        playsinline: 1,
+        controls: 1,
+        enablejsapi: 1
+      },
+      events: {
+        onReady: function(event){
+          try{ event.target.mute() }catch(e){}
+          if(playImmediately && typeof event.target.playVideo === 'function'){ try{ event.target.playVideo() }catch(e){} }
+        },
+        onStateChange: function(e){
+          if(typeof YT !== 'undefined' && e.data === YT.PlayerState.ENDED){
+            try{ localStorage.setItem(VIDEO_KEY,'1') }catch(err){}
+            closeVideo(true)
+          }
+        },
+        onError: function(err){
+          setTimeout(()=> closeVideo(true), 1200)
+        }
+      }
+    })
+  }
+}
+function openVideo(){
+  if(!videoModal || !playerContainer) return
+  videoModal.style.display = 'flex'
+  videoModal.setAttribute('aria-hidden','false')
+  document.documentElement.style.overflow = 'hidden'
+  document.body.style.overflow = 'hidden'
+  if(videoClose) videoClose.focus()
+  if(!ytApiReady){
+    pendingOpen = true
+    playerContainer.innerHTML = '<div style="display:grid;place-items:center;height:100%;width:100%"><svg width="48" height="48" viewBox="0 0 50 50" aria-hidden="true"><circle cx="25" cy="25" r="20" stroke="rgba(255,255,255,0.18)" stroke-width="4" fill="none"/><path d="M25 5 a20 20 0 0 1 0 40" stroke="white" stroke-width="4" stroke-linecap="round" fill="none" opacity="0.95"><animateTransform attributeName="transform" type="rotate" from="0 25 25" to="360 25 25" dur="1s" repeatCount="indefinite"/></path></svg></div>'
+    return
+  }
+  createOrLoadPlayer(true)
+}
+function closeVideo(fromAuto=false){
+  if(!videoModal) return
+  if(ytPlayer && typeof ytPlayer.destroy === 'function'){
+    try{ ytPlayer.destroy() }catch(e){}
+    ytPlayer = null
+  }
+  try{ playerContainer.innerHTML = '' }catch(e){}
+  videoModal.style.display = 'none'
+  videoModal.setAttribute('aria-hidden','true')
+  document.documentElement.style.overflow = ''
+  document.body.style.overflow = ''
+  try{ localStorage.setItem(VIDEO_KEY,'1') }catch(e){}
+}
+if(videoClose) videoClose.addEventListener('click', ()=>{ closeVideo(false) })
 document.addEventListener('DOMContentLoaded', ()=>{
   try{
-    const shown = localStorage.getItem(VIDEO_KEY);
-    if(!shown) openVideo();
+    const shown = localStorage.getItem(VIDEO_KEY)
+    if(!shown) openVideo()
   }catch(e){
-    openVideo();
+    openVideo()
   }
-});
+})
+document.addEventListener('keydown', e => {
+  if(e.key === 'Escape' && videoModal && videoModal.style.display === 'flex'){ closeVideo(true) }
+})
+videoModal && videoModal.addEventListener('click', (ev) => {
+  if(ev.target === videoModal) closeVideo(false)
+})
 </script>
 </body>
 </html>
