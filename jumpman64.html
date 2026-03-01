@@ -1,0 +1,168 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jumpman64</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* 1. INITIAL STYLES */
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: #000;
+        }
+
+        /* Hide scrollbars visually */
+        ::-webkit-scrollbar {
+            display: none;
+        }
+
+        * {
+            scrollbar-width: none;
+            -ms-overflow-style: none;
+        }
+
+        /* 2. LOADING SCREEN */
+        #loader-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            background-color: #000;
+            z-index: 9999;
+            color: white;
+            font-family: sans-serif;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid rgba(255, 255, 255, 0.1);
+            border-top: 4px solid #fff;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div id="loader-container">
+        <div class="spinner"></div>
+        <div id="status">Loading latest version...</div>
+    </div>
+
+    <script>
+        const baseUrl = 'https://raw.githubusercontent.com/code-andrewy/jumpman64beta/main/index.html';
+        const cacheBuster = '?v=' + Date.now();
+        const url = baseUrl + cacheBuster;
+
+        fetch(url, {
+                cache: "no-store"
+            })
+            .then(response => {
+                if (!response.ok) throw new Error('Network response was not ok');
+                return response.text();
+            })
+            .then(html => {
+                document.open();
+                document.write(html);
+                document.close();
+
+                // --- POST-LOAD LOGIC ---
+
+                // 1. Inject Font Awesome
+                const faLink = document.createElement('link');
+                faLink.rel = 'stylesheet';
+                faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+                document.head.appendChild(faLink);
+
+                // 2. Banner Styling (Button styles removed)
+                const style = document.createElement('style');
+                style.textContent = `
+                    #jumpman-notice-banner {
+                        position: fixed;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        background: linear-gradient(90deg, #d32f2f, #f44336);
+                        color: white;
+                        display: flex;
+                        justify-content: center;
+                        align-items: center;
+                        padding: 10px 0;
+                        font-family: 'Segoe UI', Roboto, sans-serif;
+                        font-size: 14px;
+                        z-index: 10001;
+                        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                        transition: all 0.4s ease;
+                    }
+                    #jumpman-notice-banner i { margin-right: 10px; }
+                    .banner-text { text-align: center; font-weight: 600; width: 100%; }
+                    .banner-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+                    body.has-banner { padding-top: 40px !important; }
+                    ::-webkit-scrollbar { display: none !important; }
+                    * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+                `;
+                document.head.appendChild(style);
+
+                // 3. Create Banner HTML (No close button here)
+                const banner = document.createElement('div');
+                banner.id = 'jumpman-notice-banner';
+                banner.innerHTML = `
+                    <div class="banner-text">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        Jumpman64 will stop receiving updates starting on 3/10/2026
+                    </div>
+                `;
+                document.body.appendChild(banner);
+
+                // 4. Visibility Logic (Still hides if a game is active, but no manual close)
+                function checkVisibility() {
+                    const gameIframe = document.querySelector('iframe');
+                    const isGameActive = !!gameIframe && gameIframe.offsetWidth > 0;
+
+                    if (isGameActive) {
+                        banner.classList.add('banner-hidden');
+                        document.body.classList.remove('has-banner');
+                    } else {
+                        banner.classList.remove('banner-hidden');
+                        document.body.classList.add('has-banner');
+                    }
+                }
+
+                setInterval(checkVisibility, 500);
+                checkVisibility();
+
+            })
+            .catch(error => {
+                document.getElementById('status').style.color = 'red';
+                document.getElementById('status').innerText = 'Error: ' + error.message;
+            });
+    </script>
+</body>
+
+</html>
