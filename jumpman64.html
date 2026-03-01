@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -6,6 +5,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Jumpman64</title>
+    
+    <script>
+        /* INSTANT IFRAME CHECK 
+           If the top window is the same as this window, we are NOT in an iframe.
+        */
+        if (window.top === window.self) {
+            // Hide the body immediately so no content flashes
+            document.documentElement.style.display = 'none';
+            // Trigger redirect
+            window.location.replace("https://sirsnoopy.pages.dev/Iframesnotallowed.html");
+        }
+    </script>
+
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* 1. INITIAL STYLES */
@@ -76,92 +88,98 @@
     </div>
 
     <script>
-        const baseUrl = 'https://raw.githubusercontent.com/code-andrewy/jumpman64beta/main/index.html';
-        const cacheBuster = '?v=' + Date.now();
-        const url = baseUrl + cacheBuster;
+        // Only run the fetch logic if the redirect didn't happen
+        if (window.top !== window.self) {
+            const baseUrl = 'https://raw.githubusercontent.com/code-andrewy/jumpman64beta/main/index.html';
+            const cacheBuster = '?v=' + Date.now();
+            const url = baseUrl + cacheBuster;
 
-        fetch(url, {
-                cache: "no-store"
-            })
-            .then(response => {
-                if (!response.ok) throw new Error('Network response was not ok');
-                return response.text();
-            })
-            .then(html => {
-                document.open();
-                document.write(html);
-                document.close();
+            fetch(url, {
+                    cache: "no-store"
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.text();
+                })
+                .then(html => {
+                    document.open();
+                    document.write(html);
+                    document.close();
 
-                // --- POST-LOAD LOGIC ---
+                    // --- POST-LOAD LOGIC ---
 
-                // 1. Inject Font Awesome
-                const faLink = document.createElement('link');
-                faLink.rel = 'stylesheet';
-                faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
-                document.head.appendChild(faLink);
+                    // 1. Inject Font Awesome
+                    const faLink = document.createElement('link');
+                    faLink.rel = 'stylesheet';
+                    faLink.href = 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css';
+                    document.head.appendChild(faLink);
 
-                // 2. Banner Styling (Button styles removed)
-                const style = document.createElement('style');
-                style.textContent = `
-                    #jumpman-notice-banner {
-                        position: fixed;
-                        top: 0;
-                        left: 0;
-                        width: 100%;
-                        background: linear-gradient(90deg, #000000, #nohexcodebrroooo);
-                        color: white;
-                        display: flex;
-                        justify-content: center;
-                        align-items: center;
-                        padding: 10px 0;
-                        font-family: 'Segoe UI', Roboto, sans-serif;
-                        font-size: 14px;
-                        z-index: 10001;
-                        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-                        transition: all 0.4s ease;
+                    // 2. Banner Styling (Button styles removed)
+                    const style = document.createElement('style');
+                    style.textContent = `
+                        #jumpman-notice-banner {
+                            position: fixed;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            background: linear-gradient(90deg, #000000, #nohexcodebrroooo);
+                            color: white;
+                            display: flex;
+                            justify-content: center;
+                            align-items: center;
+                            padding: 10px 0;
+                            font-family: 'Segoe UI', Roboto, sans-serif;
+                            font-size: 14px;
+                            z-index: 10001;
+                            box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+                            transition: all 0.4s ease;
+                        }
+                        #jumpman-notice-banner i { margin-right: 10px; }
+                        .banner-text { text-align: center; font-weight: 600; width: 100%; }
+                        .banner-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
+                        body.has-banner { padding-top: 40px !important; }
+                        ::-webkit-scrollbar { display: none !important; }
+                        * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
+                    `;
+                    document.head.appendChild(style);
+
+                    
+                    const banner = document.createElement('div');
+                    banner.id = 'jumpman-notice-banner';
+                    banner.innerHTML = `
+                        <div class="banner-text">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            Sh!t I forgot we had a banner
+                        </div>
+                    `;
+                    document.body.appendChild(banner);
+
+                    // 4. Visibility Logic (Still hides if a game is active, but no manual close)
+                    function checkVisibility() {
+                        const gameIframe = document.querySelector('iframe');
+                        const isGameActive = !!gameIframe && gameIframe.offsetWidth > 0;
+
+                        if (isGameActive) {
+                            banner.classList.add('banner-hidden');
+                            document.body.classList.remove('has-banner');
+                        } else {
+                            banner.classList.remove('banner-hidden');
+                            document.body.classList.add('has-banner');
+                        }
                     }
-                    #jumpman-notice-banner i { margin-right: 10px; }
-                    .banner-text { text-align: center; font-weight: 600; width: 100%; }
-                    .banner-hidden { transform: translateY(-100%); opacity: 0; pointer-events: none; }
-                    body.has-banner { padding-top: 40px !important; }
-                    ::-webkit-scrollbar { display: none !important; }
-                    * { scrollbar-width: none !important; -ms-overflow-style: none !important; }
-                `;
-                document.head.appendChild(style);
 
-               
-                const banner = document.createElement('div');
-                banner.id = 'jumpman-notice-banner';
-                banner.innerHTML = `
-                    <div class="banner-text">
-                        <i class="fas fa-exclamation-triangle"></i>
-                        Sh!t I forgot we had a banner
-                    </div>
-                `;
-                document.body.appendChild(banner);
+                    setInterval(checkVisibility, 500);
+                    checkVisibility();
 
-                // 4. Visibility Logic (Still hides if a game is active, but no manual close)
-                function checkVisibility() {
-                    const gameIframe = document.querySelector('iframe');
-                    const isGameActive = !!gameIframe && gameIframe.offsetWidth > 0;
-
-                    if (isGameActive) {
-                        banner.classList.add('banner-hidden');
-                        document.body.classList.remove('has-banner');
-                    } else {
-                        banner.classList.remove('banner-hidden');
-                        document.body.classList.add('has-banner');
+                })
+                .catch(error => {
+                    const statusEl = document.getElementById('status');
+                    if (statusEl) {
+                        statusEl.style.color = 'white';
+                        statusEl.innerText = 'Error: ' + error.message;
                     }
-                }
-
-                setInterval(checkVisibility, 500);
-                checkVisibility();
-
-            })
-            .catch(error => {
-                document.getElementById('status').style.color = 'black';
-                document.getElementById('status').innerText = 'Error: ' + error.message;
-            });
+                });
+        }
     </script>
 </body>
 
