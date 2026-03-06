@@ -1,4 +1,4 @@
-/* --- 1. CORE VARIABLES --- */
+/* --- 1. CORE VARIABLES --- */ 
 :root {
   --blue: #00d2ff;
   --yellow: #ffd700; 
@@ -348,3 +348,128 @@ body {
   .profile-section { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 24px; }
   .video-container { width: 95%; }
 }
+
+/* ------------------------------------------------------------------
+   ADDED FIXES & OVERRIDES (keeps all original styles above — only adds)
+   ------------------------------------------------------------------ */
+
+/* Make modal truly fullscreen and let the video take the whole viewport
+   without removing your existing .video-container defaults. These rules
+   intentionally override the earlier modal/container when the modal is shown.
+*/
+#video-modal {
+  /* ensure modal centers and uses available space on open */
+  padding: 20px;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.96);
+  transition: opacity 220ms var(--smooth-fluid), backdrop-filter 220ms var(--smooth-fluid);
+}
+
+/* When modal is active (JS should set inline style/display or add a class),
+   these make the video-container fill the viewport while preserving border-radius on large screens */
+#video-modal .video-container {
+  width: calc(100vw - 40px);
+  height: calc(100vh - 40px);
+  max-width: none;
+  max-height: none;
+  border-radius: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 60px 140px rgba(0,0,0,0.85);
+}
+
+/* Ensure iframe fills the container exactly (removes letterboxing and tiny iframe issues) */
+#video-modal .video-container iframe,
+#video-modal .video-container video {
+  width: 100%;
+  height: 100%;
+  border: 0;
+  display: block;
+}
+
+/* For very small screens, remove large radius and spacing so the video feels fullscreen */
+@media (max-width: 520px) {
+  #video-modal {
+    padding: 8px;
+    background: rgba(0,0,0,0.98);
+  }
+  #video-modal .video-container {
+    width: 100%;
+    height: 100%;
+    border-radius: 10px;
+    box-shadow: none;
+  }
+  #video-close { top: 12px; right: 12px; }
+}
+
+/* Make the close button match your .social-btn "glass" style and interactions */
+/* Keep original #video-close rules above — this block adds/overrides sizing & hover behavior */
+#video-close {
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.35s var(--smooth-bounce);
+  transform-origin: center;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 6px 18px rgba(0,0,0,0.45);
+}
+
+/* Hover like social-btn: lift and scale, and give a red accent for close */
+#video-close:hover {
+  transform: translateY(-8px) scale(1.05);
+  background: #ff0000;
+  border-color: #ff0000;
+  box-shadow: 0 12px 30px rgba(255,0,0,0.28);
+  color: #fff;
+}
+
+/* Prevent background scroll while modal is open (toggle body.modal-open via JS) */
+body.modal-open {
+  overflow: hidden;
+  touch-action: none;
+  height: 100%;
+}
+
+/* Accessibility: make the close button visually obvious when focused */
+#video-close:focus {
+  outline: 3px solid rgba(0, 210, 255, 0.18);
+  outline-offset: 2px;
+  transform: translateY(-6px) scale(1.02);
+}
+
+/* Small improvement: allow keyboard users to close by focusing the container close button
+   (no JS here — keep for styling only) */
+.video-container:focus-within { outline: none; }
+
+/* Fix: ensure modal is on top of everything (defensive) */
+#video-modal { z-index: 20000; }
+
+/* Fix: for embedded players where query params add UI chrome, ensure allowfullscreen & proper sandboxing in HTML.
+   (This is a reminder — no HTML change required here. Keep for reference.)
+*/
+
+/* Minor visual polish: subtle fade-in animation for the modal */
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: translateY(6px) scale(0.995); }
+  to   { opacity: 1; transform: translateY(0) scale(1); }
+}
+#video-modal[style*="display: flex"], /* inline show via JS */ 
+#video-modal.open { /* optional class if you use it */ 
+  animation: modalFadeIn 220ms var(--smooth-fluid);
+}
+
+/* Optional helper: center the close icon visually on small iframes that may include player controls */
+#video-close i, #video-close svg { font-size: 18px; line-height: 1; }
+
+/* End of added overrides */                                                  
