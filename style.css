@@ -1,3 +1,4 @@
+/* --- 1. CORE VARIABLES --- */
 :root {
   --blue: #00d2ff;
   --yellow: #ffd700; 
@@ -10,7 +11,7 @@
   --smooth-fluid: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* --- Base Resets --- */
+/* --- 2. BASE RESET --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
@@ -33,7 +34,7 @@ body {
   overflow-x: hidden;
 }
 
-/* --- Background Layers --- */
+/* --- 3. BACKGROUND LAYERS --- */
 #bg-video {
   position: fixed;
   inset: 0;
@@ -51,7 +52,7 @@ body {
   z-index: -1;
 }
 
-/* --- Custom Context Menu --- */
+/* --- 4. CUSTOM CONTEXT MENU --- */
 #context-menu {
   position: fixed;
   background: rgba(20, 25, 40, 0.92);
@@ -79,7 +80,7 @@ body {
 
 .menu-item:hover { background: rgba(255, 255, 255, 0.1); color: var(--blue); }
 
-/* --- The Main Card --- */
+/* --- 5. THE MAIN CARD --- */
 .container {
   width: 100%;
   max-width: 1100px;
@@ -102,7 +103,7 @@ body {
   box-shadow: 0 45px 100px rgba(0, 0, 0, 0.65);
   transform-style: preserve-3d;
   position: relative;
-  overflow: visible; /* Fixes icon clipping on hover */
+  overflow: visible; /* FIX: ensures hovers don't clip */
 }
 
 .card-glow {
@@ -114,7 +115,7 @@ body {
   border-radius: inherit;
 }
 
-/* --- Profile Styling --- */
+/* --- 6. PROFILE & SOCIALS --- */
 .profile-section {
   display: flex;
   flex-direction: column;
@@ -136,8 +137,7 @@ body {
 .pfp-outer:hover { transform: scale(1.05) rotate(2deg); }
 
 .pfp-inner {
-  width: 100%;
-  height: 100%;
+  width: 100%; height: 100%;
   border-radius: 50%;
   overflow: hidden;
   border: 4px solid rgba(0, 0, 0, 0.2);
@@ -145,7 +145,7 @@ body {
 
 .pfp-img { width: 100%; height: 100%; object-fit: cover; }
 
-/* --- Social Row Fix --- */
+/* FIX: Social Row Alignment */
 .social-row { 
   display: flex; 
   gap: 12px; 
@@ -153,11 +153,12 @@ body {
   justify-content: center; 
   align-items: center;
   width: 100%;
+  margin-top: 10px;
 }
 
-.social-btn, .contact-btn-js {
-  width: 50px;
-  height: 50px;
+.social-btn {
+  width: 52px;
+  height: 52px;
   border-radius: 14px;
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid var(--border);
@@ -169,17 +170,18 @@ body {
   transition: all 0.4s var(--smooth-bounce);
 }
 
-.social-btn:hover, .contact-btn-js:hover { 
-  transform: translateY(-8px); 
+.social-btn:hover { 
+  transform: translateY(-8px) scale(1.05); 
   color: #fff; 
 }
 
+/* Branding Hover Colors */
 .social-btn.youtube:hover { background: #ff0000; border-color: #ff0000; box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3); }
 .social-btn.discord:hover { background: #5865F2; border-color: #5865F2; box-shadow: 0 8px 20px rgba(88, 101, 242, 0.3); }
 .social-btn.github:hover { background: #333; border-color: #666; }
-.contact-btn-js:hover { background: var(--blue); border-color: var(--blue); box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3); }
+.social-btn.contact:hover { background: var(--blue); border-color: var(--blue); box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3); }
 
-/* --- Content Styling --- */
+/* --- 7. CONTENT & STATS --- */
 .content-section {
   z-index: 2;
   display: flex;
@@ -204,7 +206,6 @@ body {
 .typewriter-wrap {
   font-size: clamp(1.1rem, 2.8vw, 1.85rem);
   font-weight: 700;
-  line-height: 1.2;
 }
 
 .bio {
@@ -217,7 +218,6 @@ body {
   border: 1px solid rgba(255, 255, 255, 0.08);
 }
 
-/* --- Info Grid & Stats --- */
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
@@ -235,7 +235,7 @@ body {
   transition: all 0.3s var(--smooth-fluid);
 }
 
-/* --- Modals & Toasts --- */
+/* --- 8. MODALS & TOASTS --- */
 .video-modal {
   position: fixed;
   inset: 0;
@@ -262,11 +262,19 @@ body {
   animation: cardAppear 0.4s var(--smooth-fluid);
 }
 
-/* --- Animations & Responsive --- */
-@keyframes cardAppear {
-  from { opacity: 0; transform: translateY(20px); }
-  to { opacity: 1; transform: translateY(0); }
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.25);
+  animation: rippleAnim .6s var(--smooth-fluid) forwards;
+  z-index: 10006;
 }
+
+/* --- 9. ANIMATIONS & RESPONSIVE --- */
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rippleAnim { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(4); opacity: 0; } }
 
 @media (min-width: 850px) {
   .card { grid-template-columns: 320px 1fr; align-items: center; gap: 50px; }
