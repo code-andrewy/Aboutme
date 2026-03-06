@@ -13,8 +13,8 @@ const elements = {
   time: qs('#time'),
   temp: qs('#temp'),
   cond: qs('#cond'),
-  // FIX: Specifically target the row where Github/Discord icons live
-  socialRow: qs('.social-row') || qs('.social-links') || qs('#tilt-card')
+  // Target the specific flex row for social icons
+  socialRow: qs('.social-row') 
 };
 
 /* --- 1. MODERN CONTEXT MENU --- */
@@ -26,7 +26,6 @@ const toggleContext = (show, x = 0, y = 0) => {
     const top = Math.min(Math.max(8, y), window.innerHeight - (h || 120) - 8);
     Object.assign(elements.menu.style, { left: `${left}px`, top: `${top}px`, display: 'block' });
     elements.menu.setAttribute('aria-hidden', 'false');
-    elements.menu.querySelector('.menu-item')?.focus();
   } else {
     elements.menu.style.display = 'none';
     elements.menu.setAttribute('aria-hidden', 'true');
@@ -43,7 +42,7 @@ window.addEventListener('click', e => {
   toggleContext(false);
   const ripple = document.createElement('div');
   ripple.className = 'ripple';
-  Object.assign(ripple.style, { left: `${e.clientX}px`, top: `${e.clientY}px`, width: '12px', height: '12px' });
+  Object.assign(ripple.style, { left: `${e.clientX}px`, top: `${e.clientY}px` });
   document.body.appendChild(ripple);
   ripple.addEventListener('animationend', () => ripple.remove());
 });
@@ -67,48 +66,15 @@ const handlePointer = (e) => {
   if (!state.raf) state.raf = requestAnimationFrame(updateTilt);
 };
 
-const resetTilt = () => {
-  state.rotateX = 0; state.rotateY = 0;
-  if (elements.card) elements.card.style.transition = "transform 0.6s var(--smooth-fluid)";
-  if (!state.raf) state.raf = requestAnimationFrame(() => {
-    updateTilt();
-    setTimeout(() => { if (elements.card) elements.card.style.transition = ""; }, 600);
-  });
-};
-
 if (elements.container) {
   elements.container.addEventListener('pointermove', handlePointer, { passive: true });
-  elements.container.addEventListener('pointerleave', resetTilt);
+  elements.container.addEventListener('pointerleave', () => {
+    state.rotateX = 0; state.rotateY = 0;
+    requestAnimationFrame(updateTilt);
+  });
 }
 
-/* --- 4. SECURE CLIPBOARD SYSTEM --- */
-const showToast = (msg) => {
-  const toast = document.createElement('div');
-  toast.className = 'copy-toast';
-  toast.textContent = msg;
-  document.body.appendChild(toast);
-  setTimeout(() => toast.remove(), 2000);
-};
-
-qsa('.copy-btn').forEach(btn => {
-  btn.addEventListener('click', async (e) => {
-    e.preventDefault();
-    const url = btn.dataset.copyUrl || btn.querySelector('a')?.href;
-    if (!url) return showToast("No URL found");
-    try {
-      await navigator.clipboard.writeText(url);
-      showToast("Link Copied!");
-    } catch (err) {
-      const input = document.createElement('input');
-      input.value = url; document.body.appendChild(input);
-      input.select(); document.execCommand('copy');
-      document.body.removeChild(input);
-      showToast("Link Copied (Fallback)");
-    }
-  });
-});
-
-/* --- 5. TYPEWRITER & WEATHER --- */
+/* --- 4. TYPEWRITER & WEATHER --- */
 const phrases = ["Modern UI", "Web Apps", "Cybersecurity", "JavaScript"];
 let pIdx = 0, charIdx = 0, isDeleting = false;
 
@@ -124,50 +90,29 @@ const type = () => {
   setTimeout(type, speed);
 };
 
-const fetchWeather = async () => {
-  try {
-    const res = await fetch('https://api.weather.gov/gridpoints/GYX/47,32/forecast/hourly');
-    const data = await res.json();
-    const current = data.properties.periods[0];
-    if (elements.temp) elements.temp.textContent = `${current.temperature}°${current.temperatureUnit}`;
-    if (elements.cond) elements.cond.textContent = current.shortForecast;
-  } catch (e) { if (elements.temp) elements.temp.textContent = '72°F'; }
-};
-
-/* --- 6. YOUTUBE MODAL ENGINE --- */
-let player;
-window.onYouTubeIframeAPIReady = () => { if (!localStorage.getItem('video_shown_v5')) openVideo(); };
-
-function openVideo() {
-  if (!elements.videoModal) return;
-  elements.videoModal.style.display = 'flex';
-  player = new YT.Player('intro-player', {
-    videoId: 'Rz5RM_D_XeI',
-    playerVars: { autoplay: 1, modestbranding: 1, rel: 0 },
-    events: { onStateChange: (e) => { if (e.data === 0) closeVideo(); } }
-  });
-}
-
-function closeVideo() { player?.destroy(); if (elements.videoModal) elements.videoModal.style.display = 'none'; localStorage.setItem('video_shown_v5', '1'); }
-qs('#video-close')?.addEventListener('click', closeVideo);
-
-/* --- 7. CONTACT ICON INJECTION --- */
+/* --- 5. CONTACT ICON INJECTION --- */
 const injectContactIcon = () => {
   if (!elements.socialRow) return;
+  
   const contactBtn = document.createElement('a');
   contactBtn.href = 'https://sirsnoopy.pages.dev/contact';
-  contactBtn.className = 'social-btn contact'; // Class matches main CSS
+  contactBtn.className = 'social-btn contact';
   contactBtn.target = '_blank';
-  contactBtn.innerHTML = `<svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path><polyline points="22,6 12,13 2,6"></polyline></svg>`;
+  contactBtn.title = 'Contact Me'; // Tooltip
+  contactBtn.innerHTML = `
+    <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2">
+      <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+      <polyline points="22,6 12,13 2,6"></polyline>
+    </svg>`;
+  
   elements.socialRow.appendChild(contactBtn);
 };
 
 /* --- INITIALIZATION --- */
 document.addEventListener('DOMContentLoaded', () => {
   type();
-  fetchWeather();
   injectContactIcon();
-  setInterval(() => { if(elements.time) elements.time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }); }, 1000);
+  setInterval(() => {
+    if(elements.time) elements.time.textContent = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  }, 1000);
 });
-
-window.addEventListener('keydown', e => { if (e.key === 'Escape') { toggleContext(false); closeVideo(); } });
