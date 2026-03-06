@@ -72,10 +72,9 @@ const initSnoopyOS = () => {
     elements.socialRow.innerHTML = ''; // Clear existing to prevent duplicates
 
     const links = [
-      { id: 'youtube', icon: 'fab fa-youtube', url: 'https://youtube.com/@sirsnoopy', tip: 'Watch on YouTube', active: true },
-      { id: 'github', icon: 'fab fa-github', url: 'https://github.com/code-andrewy', tip: 'View GitHub', active: true },
-      { id: 'discord', icon: 'fab fa-discord', url: '#', tip: 'Discord Disabled', active: false },
-      { id: 'contact', icon: 'fas fa-envelope', url: 'https://sirsnoopy.pages.dev/contact', tip: 'Email Me', active: true }
+      { id: 'youtube', icon: 'fab fa-youtube', url: 'https://youtube.com/@sirsnoopy', tip: 'My YouTube channel', active: true },
+      { id: 'github', icon: 'fab fa-github', url: 'https://github.com/code-andrewy', tip: 'View my GitHub', active: true },
+      { id: 'contact', icon: 'fas fa-envelope', url: 'https://sirsnoopy.pages.dev/contact', tip: 'Contact Me', active: true }
     ];
 
     links.forEach(link => {
