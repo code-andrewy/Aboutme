@@ -1,4 +1,4 @@
-/* --- 1. CORE VARIABLES --- */ 
+
 :root {
   --blue: #00d2ff;
   --yellow: #ffd700; 
@@ -11,7 +11,6 @@
   --smooth-fluid: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
-/* --- 2. BASE RESET --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body {
