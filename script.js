@@ -1,6 +1,5 @@
 /**
- * GEMINI-OPTIMIZED FULL JS (v8)
- * Features: Font Awesome icons, robust YouTube init, tooltip injection, safer event handling
+Stop looking at my code :(
  */
 
 const qs = (s) => document.querySelector(s);
@@ -17,25 +16,166 @@ const state = { elements: null, ytApiLoaded: false };
 /* --- Global YouTube API callback (robust) --- */
 window.onYouTubeIframeAPIReady = () => {
   state.ytApiLoaded = true;
+  // attempt to init (this will open the intro modal if conditions met)
   tryInitIntroPlayer();
 };
 
+/* --- Create / ensure #intro-player exists inside .video-container --- */
+function ensureIntroPlayerElement(containerEl) {
+  if (!containerEl) return null;
+  let playerEl = containerEl.querySelector('#intro-player');
+  if (!playerEl) {
+    playerEl = document.createElement('div');
+    playerEl.id = 'intro-player';
+    // make sure the created div doesn't inherit layout constraints
+    playerEl.style.width = '100%';
+    playerEl.style.height = '100%';
+    playerEl.style.display = 'block';
+    // if you want the play button center placeholder, you could add it here.
+    containerEl.appendChild(playerEl);
+  }
+  return playerEl;
+}
+
+/* --- Open / Close Video Modal helpers --- */
+function openVideoModal() {
+  const el = state.elements;
+  if (!el || !el.videoModal) return;
+  // ensure DOM structure
+  const vc = qs('.video-container') || el.videoModal.querySelector('.video-container');
+  if (vc) ensureIntroPlayerElement(vc);
+
+  // show modal
+  el.videoModal.style.display = 'flex';
+  // prevent background scroll
+  document.body.classList.add('modal-open');
+
+  // init player only when API ready
+  if (state.ytApiLoaded) {
+    createOrReplacePlayer();
+  } else {
+    // If API hasn't loaded yet, it will call onYouTubeIframeAPIReady later which calls tryInitIntroPlayer().
+  }
+}
+
+function closeVideo() {
+  try {
+    if (player && typeof player.destroy === 'function') {
+      player.destroy();
+    }
+  } catch (err) {
+    // ignore destroy errors
+  }
+  player = null;
+
+  const el = state.elements;
+  if (el?.videoModal) {
+    el.videoModal.style.display = 'none';
+  }
+  document.body.classList.remove('modal-open');
+  // mark seen so it won't auto-open again (keeps previous behavior)
+  try { localStorage.setItem('intro_seen', 'true'); } catch (e) { /* ignore */ }
+}
+
+/* --- Resize helper to keep iframe full-viewport --- */
+function applyIframeFullViewportStyles(iframe) {
+  if (!iframe) return;
+  // positioning fixed so it always covers the screen even if .video-container shifts
+  iframe.style.position = 'fixed';
+  iframe.style.top = '0';
+  iframe.style.left = '0';
+  iframe.style.width = '100vw';
+  iframe.style.height = '100vh';
+  iframe.style.maxWidth = '100vw';
+  iframe.style.maxHeight = '100vh';
+  iframe.style.border = '0';
+  iframe.style.margin = '0';
+  iframe.style.padding = '0';
+  iframe.setAttribute('allowfullscreen', ''); // ensure fullscreen allowed
+  // Some players behave better with these allow attributes:
+  iframe.setAttribute('allow', 'autoplay; fullscreen; picture-in-picture; encrypted-media');
+}
+
+/* --- Create or re-create the YT.Player sized to viewport --- */
+function createOrReplacePlayer() {
+  const el = state.elements;
+  if (!el) return;
+
+  // ensure container & player element exist
+  const container = qs('.video-container') || el.videoModal.querySelector('.video-container');
+  if (!container) return;
+  const playerHolder = ensureIntroPlayerElement(container);
+  if (!playerHolder) return;
+
+  // destroy old instance
+  try { if (player && typeof player.destroy === 'function') player.destroy(); } catch (e) { /* ignore */ }
+  player = null;
+
+  // create new player
+  player = new YT.Player('intro-player', {
+    width: '100%',
+    height: '100%',
+    videoId: CONFIG.videoID,
+    playerVars: {
+      autoplay: 1,
+      modestbranding: 1,
+      controls: 1,
+      rel: 0,
+      fs: 1,
+      playsinline: 1
+    },
+    events: {
+      onReady: (event) => {
+        try {
+          const iframe = event.target.getIframe();
+          applyIframeFullViewportStyles(iframe);
+
+          // Defensive: ensure iframe is appended to body so it's definitely full-bleed.
+          // We keep the #intro-player element inside .video-container to preserve semantics,
+          // but move the iframe node to body to avoid any parent stacking context clipping.
+          // This also keeps the close button easily above the iframe.
+          const curIframe = iframe;
+          if (curIframe && curIframe.parentElement && curIframe.parentElement !== document.body) {
+            // create a portal wrapper to hold iframe in the body while keeping the placeholder in the container
+            // We'll move the iframe to body and keep a reference on the placeholder so destroy works correctly.
+            try {
+              // Keep a lightweight portal wrapper so styles remain consistent.
+              curIframe.style.zIndex = 20000;
+              document.body.appendChild(curIframe);
+            } catch (e) {
+              // fallback: if moving fails, we already applied full viewport styles so the iframe should fill anyway.
+            }
+          }
+        } catch (e) {
+          // ignore styling failures
+        }
+      },
+      onStateChange: (e) => {
+        // 0 = ended — close video
+        if (e.data === 0) {
+          closeVideo();
+        }
+      }
+    }
+  });
+}
+
+/* --- Try to initialize intro player (called from YT callback or init) --- */
 function tryInitIntroPlayer() {
   const el = state.elements;
   if (!el) return;
-  if (localStorage.getItem('intro_seen')) return;
-  if (!state.ytApiLoaded) return;
-  if (!el.videoModal) return;
-
-  el.videoModal.style.display = 'flex';
-  if (player) {
-    try { player.destroy(); } catch (e) { /* ignore */ }
+  // If user already saw it, don't auto-open
+  try {
+    if (localStorage.getItem('intro_seen')) return;
+  } catch (e) {
+    // localStorage may be blocked — ignore and attempt to open
   }
-  player = new YT.Player('intro-player', {
-    videoId: CONFIG.videoID,
-    playerVars: { autoplay: 1, modestbranding: 1 },
-    events: { onStateChange: (e) => { if (e.data === 0) closeVideo(); } }
-  });
+
+  // prefer to show the modal and create the player if API ready
+  if (!state.ytApiLoaded) return; // will be called again via onYouTubeIframeAPIReady
+
+  // show modal and create player sized to viewport
+  openVideoModal();
 }
 
 /* --- Utility: safe fetch json with fallback --- */
@@ -85,7 +225,6 @@ const initSnoopyOS = () => {
       a.setAttribute('data-tooltip', link.tip);
       a.setAttribute('aria-label', link.tip);
 
-      // Insert Font Awesome <i> icon and visually-match previous SVG size
       a.innerHTML = `<i class="${link.icon}" style="font-size:22px; line-height:1;" aria-hidden="true"></i>`;
 
       if (!link.active) {
@@ -101,13 +240,11 @@ const initSnoopyOS = () => {
   const fetchWeather = async () => {
     const data = await safeFetchJson(CONFIG.weatherURL);
     try {
-      // NWS hourly gridpoints sometimes uses properties.periods
       const current = data?.properties?.periods?.[0] ?? null;
       if (current) {
         if (elements.temp) elements.temp.textContent = `${current.temperature}°F`;
         if (elements.cond) elements.cond.textContent = current.shortForecast;
       } else {
-        // fallback
         if (elements.temp) elements.temp.textContent = '72°F';
         if (elements.cond) elements.cond.textContent = 'Clear';
       }
@@ -145,23 +282,43 @@ const initSnoopyOS = () => {
     }
   };
 
-  /* --- C. INTRO MODAL --- */
-  const closeVideo = () => {
-    try { player?.destroy(); } catch (e) { /* ignore */ }
-    player = null;
-    if (elements.videoModal) elements.videoModal.style.display = 'none';
-    localStorage.setItem('intro_seen', 'true');
+  /* --- C. INTRO MODAL (w/ close handling) --- */
+  // Close logic (attached safely)
+  const closeVideoSafe = (ev) => {
+    ev?.preventDefault?.();
+    closeVideo();
   };
 
-  // safe attach click
-  elements.videoClose?.addEventListener('click', closeVideo);
+  // click handler for close button
+  elements.videoClose?.addEventListener('click', closeVideoSafe);
+
+  // click outside the actual content closes the modal (only if clicking the modal backdrop)
+  if (elements.videoModal) {
+    elements.videoModal.addEventListener('click', (ev) => {
+      // if click target is the backdrop itself (videoModal), close
+      if (ev.target === elements.videoModal) {
+        closeVideo();
+      }
+    }, { passive: true });
+  }
+
+  // ESC key closes
+  window.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Escape') {
+      // only close if modal is visible
+      if (elements.videoModal && elements.videoModal.style.display !== 'none') {
+        ev.preventDefault();
+        closeVideo();
+      }
+    }
+  });
 
   /* --- D. TILT & CLOCK --- */
   const handlePointer = (e) => {
     if (!elements.card || window.innerWidth <= 768) return;
     const rect = elements.card.getBoundingClientRect();
-    const clientX = (e.clientX ?? e.touches?.[0]?.clientX);
-    const clientY = (e.clientY ?? e.touches?.[0]?.clientY);
+    const clientX = (e.clientX ?? (e.touches && e.touches[0] && e.touches[0].clientX));
+    const clientY = (e.clientY ?? (e.touches && e.touches[0] && e.touches[0].clientY));
     if (clientX == null || clientY == null) return;
     const x = clientX - rect.left;
     const y = clientY - rect.top;
@@ -193,6 +350,15 @@ const initSnoopyOS = () => {
 
   // If YouTube API already loaded before DOMContentLoaded, try init now
   tryInitIntroPlayer();
+
+  // Make sure resize keeps the iframe full viewport if present
+  window.addEventListener('resize', () => {
+    // find any YT iframe and reapply styles
+    try {
+      const iframe = document.querySelector('iframe[src*="youtube.com/embed"]');
+      if (iframe) applyIframeFullViewportStyles(iframe);
+    } catch (e) { /* ignore */ }
+  });
 };
 
 /* --- Bootstrap: insert YouTube API tag then init on DOMContentLoaded --- */
@@ -202,10 +368,7 @@ const initSnoopyOS = () => {
     const tag = document.createElement('script');
     tag.src = "https://www.youtube.com/iframe_api";
     document.head.appendChild(tag);
-  } else {
-    // If script was already loaded, set flag (it may still call onYouTubeIframeAPIReady)
-    // We cannot reliably detect if API is ready without callback, so keep default behavior.
   }
 
-  document.addEventListener('DOMContentLoaded', initSnoopyOS);
+  document.addEventListener('DOMContentLoaded', initSnoopyOS, { once: true });
 })();
