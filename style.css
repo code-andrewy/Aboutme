@@ -1,3 +1,4 @@
+/* --- 1. CORE VARIABLES --- */
 :root {
   --blue: #00d2ff;
   --yellow: #ffd700; 
@@ -10,74 +11,278 @@
   --smooth-fluid: cubic-bezier(0.23, 1, 0.32, 1);
 }
 
+/* --- 2. BASE RESET --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
-body {
-  display: flex; align-items: center; justify-content: center; min-height: 100vh;
-  background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), var(--bg-fallback);
-  background-size: cover; background-position: center; background-attachment: fixed;
-  font-family: 'Plus Jakarta Sans', sans-serif; color: var(--text); overflow: hidden;
+html, body {
+  height: 100%;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  -webkit-font-smoothing: antialiased;
+  color: var(--text);
 }
 
-/* --- The Main Card --- */
-.container { width: 100%; max-width: 1100px; perspective: 2000px; z-index: 2; }
+body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), var(--bg-fallback);
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+  overflow-x: hidden;
+}
+
+/* --- 3. BACKGROUND LAYERS --- */
+#bg-video {
+  position: fixed;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -2;
+  pointer-events: none;
+}
+
+#bg-overlay {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
+  z-index: -1;
+}
+
+/* --- 4. CUSTOM CONTEXT MENU --- */
+#context-menu {
+  position: fixed;
+  background: rgba(20, 25, 40, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 6px;
+  width: 190px;
+  display: none;
+  z-index: 10005;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+}
+
+.menu-item {
+  padding: 10px 14px;
+  font-size: .85rem;
+  border-radius: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  transition: all 0.2s ease;
+}
+
+.menu-item:hover { background: rgba(255, 255, 255, 0.1); color: var(--blue); }
+
+/* --- 5. THE MAIN CARD --- */
+.container {
+  width: 100%;
+  max-width: 1100px;
+  perspective: 2000px;
+  z-index: 2;
+  animation: cardAppear 0.85s var(--smooth-fluid);
+}
 
 .card {
-  width: 100%; background: var(--glass); border: 1px solid var(--border); border-radius: 40px;
-  padding: 48px; display: grid; grid-template-columns: 1fr; gap: 40px;
-  backdrop-filter: blur(35px) saturate(180%); -webkit-backdrop-filter: blur(35px) saturate(180%);
-  box-shadow: 0 45px 100px rgba(0, 0, 0, 0.65); transform-style: preserve-3d;
-  position: relative; overflow: visible; 
+  width: 100%;
+  background: var(--glass);
+  border: 1px solid var(--border);
+  border-radius: 40px;
+  padding: clamp(24px, 5vw, 56px);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: clamp(24px, 4vw, 48px);
+  backdrop-filter: blur(35px) saturate(180%);
+  -webkit-backdrop-filter: blur(35px) saturate(180%);
+  box-shadow: 0 45px 100px rgba(0, 0, 0, 0.65);
+  transform-style: preserve-3d;
+  position: relative;
+  overflow: visible; /* FIX: ensures hovers don't clip */
 }
 
-/* --- Social Row Fix (Discord Removed) --- */
+.card-glow {
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.12), transparent 45%);
+  pointer-events: none;
+  z-index: 1;
+  border-radius: inherit;
+}
+
+/* --- 6. PROFILE & SOCIALS --- */
+.profile-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 24px;
+  z-index: 2;
+}
+
+.pfp-outer {
+  width: clamp(140px, 20vw, 220px);
+  height: clamp(140px, 20vw, 220px);
+  background: var(--yellow);
+  border-radius: 50%;
+  padding: 6px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+  transition: transform 0.5s var(--smooth-bounce);
+}
+
+.pfp-outer:hover { transform: scale(1.05) rotate(2deg); }
+
+.pfp-inner {
+  width: 100%; height: 100%;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 4px solid rgba(0, 0, 0, 0.2);
+}
+
+.pfp-img { width: 100%; height: 100%; object-fit: cover; }
+
+/* FIX: Social Row Alignment */
 .social-row { 
-  display: flex; gap: 14px; flex-wrap: wrap; 
-  justify-content: center; align-items: center; 
+  display: flex; 
+  gap: 12px; 
+  flex-wrap: wrap; 
+  justify-content: center; 
+  align-items: center;
+  width: 100%;
+  margin-top: 10px;
 }
 
 .social-btn {
-  width: 54px; height: 54px; border-radius: 14px;
-  background: rgba(255, 255, 255, 0.08); border: 1px solid var(--border);
-  color: white; display: flex; align-items: center; justify-content: center;
-  text-decoration: none; transition: all 0.4s var(--smooth-bounce);
-  position: relative;
+  width: 52px;
+  height: 52px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.4s var(--smooth-bounce);
 }
 
-.social-btn:hover { transform: translateY(-8px) scale(1.1); }
+.social-btn:hover { 
+  transform: translateY(-8px) scale(1.05); 
+  color: #fff; 
+}
 
-/* Branding */
-.social-btn.youtube:hover { background: #ff0000; border-color: #ff0000; box-shadow: 0 10px 20px rgba(255,0,0,0.3); }
+/* Branding Hover Colors */
+.social-btn.youtube:hover { background: #ff0000; border-color: #ff0000; box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3); }
+.social-btn.discord:hover { background: #5865F2; border-color: #5865F2; box-shadow: 0 8px 20px rgba(88, 101, 242, 0.3); }
 .social-btn.github:hover { background: #333; border-color: #666; }
-.social-btn.contact:hover { background: var(--blue); border-color: var(--blue); box-shadow: 0 10px 20px rgba(0,210,255,0.3); }
+.social-btn.contact:hover { background: var(--blue); border-color: var(--blue); box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3); }
 
-/* --- Custom Tooltip Style --- */
-[title] { position: relative; }
-
-/* --- Profile --- */
-.pfp-outer {
-  width: 180px; height: 180px; background: var(--yellow);
-  border-radius: 50%; padding: 5px; box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+/* --- 7. CONTENT & STATS --- */
+.content-section {
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
 }
-.pfp-inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 4px solid rgba(0,0,0,0.2); }
-.pfp-img { width: 100%; height: 100%; object-fit: cover; }
 
-/* --- Context Menu --- */
-#context-menu {
-  position: fixed; background: rgba(20, 25, 40, 0.92); border: 1px solid var(--border);
-  border-radius: 12px; padding: 5px; display: none; z-index: 1000;
+.greeting {
+  color: var(--blue);
+  text-transform: uppercase;
+  letter-spacing: 4px;
+  font-weight: 800;
+  font-size: 0.75rem;
 }
-.menu-item { padding: 8px 12px; cursor: pointer; border-radius: 8px; font-size: 0.9rem; }
-.menu-item:hover { background: rgba(255,255,255,0.1); color: var(--blue); }
 
-/* --- Responsive --- */
+.name-logo {
+  max-width: 340px;
+  width: 100%;
+  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
+}
+
+.typewriter-wrap {
+  font-size: clamp(1.1rem, 2.8vw, 1.85rem);
+  font-weight: 700;
+}
+
+.bio {
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.8;
+  background: rgba(0, 0, 0, 0.25);
+  padding: 20px 24px;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.info-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+}
+
+.stat-box {
+  background: rgba(255, 255, 255, 0.05);
+  padding: 16px;
+  border-radius: 18px;
+  border: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  transition: all 0.3s var(--smooth-fluid);
+}
+
+/* --- 8. MODALS & TOASTS --- */
+.video-modal {
+  position: fixed;
+  inset: 0;
+  display: none;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.97);
+  z-index: 10010;
+  backdrop-filter: blur(15px);
+}
+
+.copy-toast {
+  position: fixed;
+  left: 50%;
+  transform: translateX(-50%);
+  bottom: 50px;
+  padding: 14px 24px;
+  border-radius: 16px;
+  background: rgba(10, 10, 10, 0.95);
+  border: 1px solid var(--blue);
+  color: #fff;
+  font-weight: 700;
+  z-index: 120000;
+  animation: cardAppear 0.4s var(--smooth-fluid);
+}
+
+.ripple {
+  position: fixed;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  background: rgba(255, 255, 255, 0.25);
+  animation: rippleAnim .6s var(--smooth-fluid) forwards;
+  z-index: 10006;
+}
+
+/* --- 9. ANIMATIONS & RESPONSIVE --- */
+@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+@keyframes rippleAnim { 0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; } 100% { transform: translate(-50%, -50%) scale(4); opacity: 0; } }
+
 @media (min-width: 850px) {
-  .card { grid-template-columns: 300px 1fr; align-items: center; }
+  .card { grid-template-columns: 320px 1fr; align-items: center; gap: 50px; }
+  .profile-section { border-right: 1px solid var(--border); padding-right: 50px; }
   .social-row { justify-content: flex-start; }
 }
 
-@keyframes rippleAnim { 
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; } 
-  100% { transform: translate(-50%, -50%) scale(4); opacity: 0; } 
+@media (max-width: 600px) {
+  .card { padding: 24px; border-radius: 30px; }
+  .profile-section { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 24px; }
 }
-.ripple { position: fixed; border-radius: 50%; background: rgba(255,255,255,0.3); animation: rippleAnim 0.5s ease-out forwards; pointer-events: none; }
