@@ -19,6 +19,7 @@ html, body {
   font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
   color: var(--text);
+  overflow-x: hidden;
 }
 
 body {
@@ -31,7 +32,6 @@ body {
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-  overflow-x: hidden;
 }
 
 /* --- 3. BACKGROUND LAYERS --- */
@@ -103,7 +103,7 @@ body {
   box-shadow: 0 45px 100px rgba(0, 0, 0, 0.65);
   transform-style: preserve-3d;
   position: relative;
-  overflow: visible; /* FIX: ensures hovers don't clip */
+  overflow: visible; 
 }
 
 .card-glow {
@@ -145,7 +145,6 @@ body {
 
 .pfp-img { width: 100%; height: 100%; object-fit: cover; }
 
-/* FIX: Social Row Alignment */
 .social-row { 
   display: flex; 
   gap: 12px; 
@@ -168,6 +167,7 @@ body {
   justify-content: center;
   text-decoration: none;
   transition: all 0.4s var(--smooth-bounce);
+  position: relative; /* Required for tooltips */
 }
 
 .social-btn:hover { 
@@ -175,10 +175,35 @@ body {
   color: #fff; 
 }
 
-/* Branding Hover Colors */
+/* Tooltip Styling */
+.social-btn::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  bottom: -40px;
+  left: 50%;
+  transform: translateX(-50%) translateY(10px);
+  background: rgba(0, 0, 0, 0.9);
+  border: 1px solid var(--border);
+  color: white;
+  padding: 5px 12px;
+  border-radius: 8px;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transition: all 0.3s var(--smooth-fluid);
+  z-index: 100;
+}
+
+.social-btn:hover::after {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+/* Branding Hover Colors (Discord Removed) */
 .social-btn.youtube:hover { background: #ff0000; border-color: #ff0000; box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3); }
-.social-btn.discord:hover { background: #5865F2; border-color: #5865F2; box-shadow: 0 8px 20px rgba(88, 101, 242, 0.3); }
-.social-btn.github:hover { background: #333; border-color: #666; }
+.social-btn.github:hover { background: #333; border-color: #666; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4); }
+.social-btn.contact-injected:hover,
 .social-btn.contact:hover { background: var(--blue); border-color: var(--blue); box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3); }
 
 /* --- 7. CONTENT & STATS --- */
@@ -206,6 +231,7 @@ body {
 .typewriter-wrap {
   font-size: clamp(1.1rem, 2.8vw, 1.85rem);
   font-weight: 700;
+  min-height: 1.5em;
 }
 
 .bio {
@@ -235,16 +261,51 @@ body {
   transition: all 0.3s var(--smooth-fluid);
 }
 
-/* --- 8. MODALS & TOASTS --- */
-.video-modal {
+/* --- 8. INTRO MODAL & TOASTS --- */
+#video-modal {
   position: fixed;
   inset: 0;
-  display: none;
+  display: none; /* Controlled by JS */
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.97);
+  background: rgba(0, 0, 0, 0.95);
   z-index: 10010;
   backdrop-filter: blur(15px);
+}
+
+.video-container {
+  width: 90%;
+  max-width: 900px;
+  aspect-ratio: 16/9;
+  position: relative;
+  background: #000;
+  border-radius: 24px;
+  overflow: hidden;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+  border: 1px solid var(--border);
+}
+
+#video-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid var(--border);
+  color: white;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 10011;
+  transition: all 0.2s ease;
+}
+
+#video-close:hover {
+  background: #ff0000;
+  transform: rotate(90deg);
 }
 
 .copy-toast {
@@ -285,4 +346,5 @@ body {
 @media (max-width: 600px) {
   .card { padding: 24px; border-radius: 30px; }
   .profile-section { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 24px; }
+  .video-container { width: 95%; }
 }
