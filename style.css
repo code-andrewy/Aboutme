@@ -17,9 +17,7 @@ html, body {
   height: 100%;
   font-family: 'Plus Jakarta Sans', sans-serif;
   -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
   color: var(--text);
-  overflow-x: hidden;
 }
 
 body {
@@ -27,96 +25,18 @@ body {
   align-items: center;
   justify-content: center;
   min-height: 100vh;
-  padding: env(safe-area-inset-top, 20px) env(safe-area-inset-right, 20px) env(safe-area-inset-bottom, 20px) env(safe-area-inset-left, 20px);
+  padding: 20px;
   background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), var(--bg-fallback);
   background-size: cover;
   background-position: center;
-  overflow-y: auto;
-}
-
-/* Custom Scrollbar for the Card */
-.card::-webkit-scrollbar { width: 6px; }
-.card::-webkit-scrollbar-track { background: transparent; }
-.card::-webkit-scrollbar-thumb { background: rgba(255, 255, 255, 0.1); border-radius: 10px; }
-
-@media (min-width: 1100px) { body { background-attachment: fixed; } }
-
-/* --- Background Layers --- */
-#bg-video {
-  position: fixed;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  z-index: -2;
-  pointer-events: none;
-}
-
-#bg-overlay {
-  position: fixed;
-  inset: 0;
-  background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.6));
-  z-index: -1;
-  pointer-events: none;
-}
-
-.hide-video #bg-video { display: none; }
-
-/* --- Custom Context Menu --- */
-#context-menu {
-  position: fixed;
-  background: rgba(20, 25, 40, 0.92);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid var(--border);
-  border-radius: 14px;
-  padding: 6px;
-  width: 190px;
-  display: none;
-  z-index: 10005;
-  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
-}
-
-.menu-item {
-  padding: 10px 14px;
-  font-size: .85rem;
-  border-radius: 10px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  transition: all 0.2s ease;
-}
-
-.menu-item:hover { background: rgba(255, 255, 255, 0.1); color: var(--blue); }
-
-/* --- Animations & Interaction --- */
-@keyframes cardAppear {
-  from { opacity: 0; transform: translateY(30px) scale(0.96); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-
-.ripple {
-  position: fixed;
-  border-radius: 50%;
-  transform: translate(-50%, -50%);
-  pointer-events: none;
-  background: rgba(255, 255, 255, 0.25);
-  animation: rippleAnim .6s var(--smooth-fluid) forwards;
-  z-index: 10006;
-}
-
-@keyframes rippleAnim {
-  0% { transform: translate(-50%, -50%) scale(0); opacity: 0.8; }
-  100% { transform: translate(-50%, -50%) scale(4); opacity: 0; }
+  background-attachment: fixed;
+  overflow-x: hidden;
 }
 
 /* --- The Main Card --- */
 .container {
   width: 100%;
   max-width: 1100px;
-  margin: 0 auto;
-  padding: 15px;
   perspective: 2000px;
   z-index: 2;
   animation: cardAppear 0.85s var(--smooth-fluid);
@@ -136,41 +56,62 @@ body {
   box-shadow: 0 45px 100px rgba(0, 0, 0, 0.65);
   transform-style: preserve-3d;
   position: relative;
-  max-height: calc(100vh - 40px);
-  overflow-y: auto;
-  overflow-x: hidden;
-  will-change: transform;
+  /* Fixed Bug: overflow-y: auto was cutting off hover translations */
+  overflow: visible; 
 }
 
-.card-glow {
-  position: absolute;
-  inset: 0;
-  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.12), transparent 45%);
-  pointer-events: none;
-  z-index: 1;
-  border-radius: inherit;
+/* --- Social Layout Fix --- */
+.social-row { 
+  display: flex; 
+  gap: 12px; 
+  flex-wrap: wrap; 
+  justify-content: center; /* Centers icons under PFP */
+  align-items: center;
+  width: 100%;
 }
 
-/* --- Profile Styling --- */
+.social-btn, .contact-btn-js {
+  width: 50px;
+  height: 50px;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid var(--border);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.4s var(--smooth-bounce);
+}
+
+.social-btn:hover, .contact-btn-js:hover { 
+  transform: translateY(-8px); 
+  color: #fff; 
+}
+
+/* Branding Colors */
+.social-btn.youtube:hover { background: #ff0000; border-color: #ff0000; box-shadow: 0 8px 20px rgba(255, 0, 0, 0.3); }
+.social-btn.discord:hover { background: #5865F2; border-color: #5865F2; box-shadow: 0 8px 20px rgba(88, 101, 242, 0.3); }
+.social-btn.github:hover { background: #333; border-color: #666; }
+/* Email/Contact styling */
+.contact-btn-js:hover { background: var(--blue); border-color: var(--blue); box-shadow: 0 8px 20px rgba(0, 210, 255, 0.3); }
+
+/* --- Profile Section --- */
 .profile-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 28px;
-  z-index: 2;
+  gap: 24px;
 }
 
 .pfp-outer {
-  width: clamp(140px, 22vw, 240px);
-  height: clamp(140px, 22vw, 240px);
+  width: clamp(140px, 20vw, 220px);
+  height: clamp(140px, 20vw, 220px);
   background: var(--yellow);
   border-radius: 50%;
-  padding: 7px;
-  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
-  transition: transform 0.5s var(--smooth-bounce);
+  padding: 6px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
 }
-
-.pfp-outer:hover { transform: scale(1.05) rotate(2deg); }
 
 .pfp-inner {
   width: 100%;
@@ -182,154 +123,31 @@ body {
 
 .pfp-img { width: 100%; height: 100%; object-fit: cover; }
 
-/* --- Content Styling --- */
-.content-section {
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-}
-
-.greeting {
-  color: var(--blue);
-  text-transform: uppercase;
-  letter-spacing: 4px;
-  font-weight: 800;
-  font-size: 0.75rem;
-}
-
-.name-logo {
-  max-width: 340px;
-  width: 100%;
-  filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.5));
-}
-
-.typewriter-wrap {
-  font-size: clamp(1.1rem, 2.8vw, 1.85rem);
-  font-weight: 700;
-  line-height: 1.2;
-}
-
-.bio {
-  color: var(--muted);
-  font-size: 1.05rem;
-  line-height: 1.8;
-  background: rgba(0, 0, 0, 0.25);
-  padding: 20px 24px;
-  border-radius: 22px;
-  border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-/* --- Stats Grid --- */
+/* --- Info Grid --- */
 .info-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
-  gap: 16px;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 12px;
 }
 
 .stat-box {
   background: rgba(255, 255, 255, 0.05);
-  padding: 18px;
-  border-radius: 18px;
+  padding: 14px 20px;
+  border-radius: 16px;
   border: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 14px;
-  transition: all 0.3s var(--smooth-fluid);
+  gap: 12px;
 }
 
-.stat-box:hover {
-  transform: translateY(-8px);
-  background: rgba(255, 255, 255, 0.08);
-  border-color: var(--blue);
-}
-
-.stat-box i { font-size: 1.4rem; color: var(--blue); }
-
-/* --- BRAND SPECIFIC SOCIALS --- */
-.social-row { display: flex; gap: 16px; flex-wrap: wrap; }
-
-.social-btn {
-  width: 58px;
-  height: 58px;
-  border-radius: 16px;
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid var(--border);
-  color: white;
-  font-size: 1.4rem;
-  display: grid;
-  place-items: center;
-  text-decoration: none;
-  transition: all 0.4s var(--smooth-bounce);
-}
-
-.social-btn:hover { transform: translateY(-10px) scale(1.1); color: #fff; }
-
-/* Brand Colors */
-.social-btn.youtube:hover { background: #ff0000; box-shadow: 0 10px 25px rgba(255, 0, 0, 0.4); border-color: #ff0000; }
-.social-btn.discord:hover { background: #5865F2; box-shadow: 0 10px 25px rgba(88, 101, 242, 0.4); border-color: #5865F2; }
-.social-btn.twitter:hover, .social-btn.x:hover { background: #1DA1F2; box-shadow: 0 10px 25px rgba(29, 161, 242, 0.4); border-color: #1DA1F2; }
-.social-btn.github:hover { background: #333; box-shadow: 0 10px 25px rgba(0, 0, 0, 0.6); border-color: #666; }
-.social-btn.instagram:hover { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); box-shadow: 0 10px 25px rgba(220, 39, 67, 0.4); border-color: transparent; }
-
-/* NEW: Contact/Email Branding */
-.social-btn.contact:hover { 
-  background: #00d2ff; 
-  box-shadow: 0 10px 25px rgba(0, 210, 255, 0.4); 
-  border-color: #00d2ff; 
-}
-
-/* --- Responsive Layouts --- */
+/* --- Responsive Styling --- */
 @media (min-width: 850px) {
-  .card { grid-template-columns: 350px 1fr; align-items: center; gap: 50px; }
-  .profile-section { border-right: 1px solid var(--border); padding-right: 50px; }
+  .card { grid-template-columns: 300px 1fr; align-items: center; }
+  .profile-section { border-right: 1px solid var(--border); padding-right: 40px; }
+  .social-row { justify-content: flex-start; }
 }
 
-@media (max-width: 600px) {
-  .card { padding: 24px; border-radius: 30px; }
-  .profile-section { border-right: none; border-bottom: 1px solid var(--border); padding-bottom: 24px; }
-  .social-row { justify-content: center; }
-  .name-logo { margin: 0 auto; display: block; }
-  .greeting { text-align: center; }
-}
-
-/* --- Modals & Toasts --- */
-.video-modal {
-  position: fixed;
-  inset: 0;
-  display: none;
-  align-items: center;
-  justify-content: center;
-  background: rgba(0, 0, 0, 0.97);
-  z-index: 10010;
-  backdrop-filter: blur(15px);
-}
-
-.video-frame .close {
-  position: absolute;
-  right: 25px;
-  top: 25px;
-  background: rgba(255, 255, 255, 0.1);
-  border: 1px solid var(--border);
-  color: #fff;
-  padding: 12px;
-  border-radius: 12px;
-  cursor: pointer;
-  transition: 0.3s;
-}
-
-.copy-toast {
-  position: fixed;
-  left: 50%;
-  transform: translateX(-50%);
-  bottom: 50px;
-  padding: 14px 24px;
-  border-radius: 16px;
-  background: rgba(10, 10, 10, 0.95);
-  border: 1px solid var(--blue);
-  color: #fff;
-  font-weight: 700;
-  z-index: 120000;
-  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-  animation: cardAppear 0.4s var(--smooth-fluid);
+@keyframes cardAppear {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
