@@ -1,6 +1,3 @@
-/**
- * SnoopyOS - Refined & Bug-Fixed
- */
 
 const qs = (s) => document.querySelector(s);
 
