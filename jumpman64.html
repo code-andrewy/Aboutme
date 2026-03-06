@@ -89,7 +89,7 @@
                     document.open();
                     document.write(html);
                     
-                    // Inject Banner Styles and Script INTO the new document
+                    // Inject Banner Styles, Banner HTML, and the Redirect Script INTO the new document
                     const bannerLogic = `
                         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
                         <style>
@@ -118,11 +118,12 @@
                         <div id="jumpman-notice-banner">
                             <div class="banner-text">
                                 <i class="fas fa-exclamation-triangle"></i>
-                                Press "\`" for a free cookie 🍪
+                                Press "&#96;" for a free cookie 🍪
                             </div>
                         </div>
                         <script>
                             (function() {
+                                // 1. Banner visibility logic
                                 const banner = document.getElementById('jumpman-notice-banner');
                                 function checkVisibility() {
                                     const gameIframe = document.querySelector('iframe');
@@ -136,6 +137,13 @@
                                     }
                                 }
                                 setInterval(checkVisibility, 500);
+
+                                // 2. Panic Key Logic (Redirect on Backtick)
+                                document.addEventListener('keydown', function(event) {
+                                    if (event.key === '\\u0060') { // \\u0060 is the unicode for the backtick \`
+                                        window.location.replace('https://classroom.google.com/u/1/');
+                                    }
+                                });
                             })();
                         <\/script>
                     `;
