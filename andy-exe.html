@@ -1,0 +1,661 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title id="page-title">Our Journey</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+    <style>
+        :root {
+            --primary-blue: #4db8ff;
+            --bg-dark: #0f172a;
+            --container-dark: #1e293b;
+            --text-light: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent-glow: rgba(77, 184, 255, 0.4);
+            --page-gap: 40px;
+            --card-max-width: 760px;
+            --card-min-width: 320px;
+            --card-vertical-margin: 28px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            font-family: 'Inter', system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+            background: radial-gradient(circle at top right, #1e293b, var(--bg-dark));
+            color: var(--text-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: var(--page-gap);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
+
+        .page-frame {
+            width: 100%;
+            max-width: calc(var(--card-max-width) + 2 * var(--page-gap));
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            width: 100%;
+            display: flex;
+            justify-content: center;
+            perspective: 1200px;
+        }
+
+        .card {
+            background: var(--container-dark);
+            width: min(var(--card-max-width), 92vw);
+            min-width: var(--card-min-width);
+            border-radius: 24px;
+            padding: clamp(18px, 3.5vw, 36px);
+            box-shadow: 0 30px 70px rgba(0, 0, 0, 0.6);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            transform-style: preserve-3d;
+            position: relative;
+            overflow: hidden;
+            transition: transform 300ms ease, box-shadow 220ms ease;
+            max-height: calc(100vh - (2 * var(--card-vertical-margin)));
+            display: flex;
+            flex-direction: column;
+            animation: fadeInContainer 0.6s ease-out;
+        }
+
+        .card-inner {
+            overflow-y: auto;
+            padding-right: 8px;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .card-inner::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .card-inner::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 10px;
+        }
+
+        .card-inner::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        @keyframes fadeInContainer {
+            from {
+                opacity: 0;
+                transform: translateY(18px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .card-glow {
+            position: absolute;
+            inset: 0;
+            border-radius: inherit;
+            pointer-events: none;
+            z-index: 1;
+            background: radial-gradient(450px circle at var(--x, 50%) var(--y, 50%), rgba(77, 184, 255, 0.18), transparent 55%);
+            mix-blend-mode: screen;
+        }
+
+        .external-link {
+            position: absolute;
+            right: 14px;
+            top: 14px;
+            z-index: 4;
+            display: inline-flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 12px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            color: var(--text-light);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: transform .18s ease, background .18s ease;
+        }
+
+        .external-link:hover {
+            transform: translateY(-3px);
+            background: rgba(77, 184, 255, 0.12);
+        }
+
+        .profile-wrap {
+            width: clamp(120px, 30vw, 170px);
+            height: clamp(120px, 30vw, 170px);
+            margin: 0 auto 20px;
+            position: relative;
+            z-index: 2;
+            flex: 0 0 auto;
+        }
+
+        .profile-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            border-radius: 50%;
+            border: 4px solid var(--primary-blue);
+            display: block;
+            background: linear-gradient(180deg, #0f172a, #111827);
+            cursor: pointer;
+        }
+
+        .profile-wrap::after {
+            content: '';
+            position: absolute;
+            inset: 0;
+            border-radius: 50%;
+            background: var(--primary-blue);
+            filter: blur(16px);
+            opacity: 0.34;
+            z-index: -1;
+            animation: pulseGlow 3s infinite alternate;
+        }
+
+        @keyframes pulseGlow {
+            from {
+                transform: scale(1);
+                opacity: 0.18
+            }
+
+            to {
+                transform: scale(1.08);
+                opacity: 0.4
+            }
+        }
+
+        h1 {
+            text-align: center;
+            font-size: clamp(1.5rem, 3.2vw, 2rem);
+            margin-bottom: 14px;
+            z-index: 2;
+            flex: 0 0 auto;
+        }
+
+        #timer-container {
+            background: rgba(255, 255, 255, 0.03);
+            padding: 14px;
+            border-radius: 16px;
+            text-align: center;
+            margin-bottom: 18px;
+            border: 1px solid rgba(77, 184, 255, 0.14);
+            z-index: 2;
+            flex: 0 0 auto;
+        }
+
+        #timer {
+            margin-top: 6px;
+            font-size: clamp(1rem, 3vw, 1.4rem);
+            font-weight: 700;
+            color: var(--primary-blue);
+            font-variant-numeric: tabular-nums;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: clamp(10px, 2vw, 16px);
+            z-index: 2;
+        }
+
+        .item {
+            padding: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.02);
+            transition: transform .22s ease, background .22s ease;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+        }
+
+        .item:hover {
+            transform: translateX(4px);
+            background: rgba(255, 255, 255, 0.06);
+        }
+
+        .label {
+            display: block;
+            font-size: .75rem;
+            color: var(--primary-blue);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-bottom: 6px;
+        }
+
+        .value {
+            font-size: 1rem;
+            color: var(--text-light);
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        footer {
+            margin-top: 18px;
+            padding-top: 8px;
+            text-align: center;
+            color: var(--text-muted);
+            z-index: 2;
+            flex: 0 0 auto;
+        }
+
+        /* Pulsing Heart Animation */
+        .heart-icon {
+            color: #ff4d4d;
+            display: inline-block;
+            vertical-align: middle;
+            animation: heartPulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes heartPulse {
+            0% {
+                transform: scale(1);
+            }
+
+            15% {
+                transform: scale(1.2);
+            }
+
+            30% {
+                transform: scale(1);
+            }
+
+            45% {
+                transform: scale(1.15);
+            }
+
+            60% {
+                transform: scale(1);
+            }
+        }
+
+        @media (max-width: 600px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full-width {
+                grid-column: span 1;
+            }
+
+            .card {
+                padding: clamp(14px, 5vw, 22px);
+                max-height: calc(100vh - 56px);
+            }
+
+            body {
+                padding: 18px;
+            }
+        }
+
+        /* ---- Compliment feature styles ---- */
+        #compliment-area {
+            text-align: center;
+            margin: 12px 0 20px;
+            z-index: 3;
+            position: relative;
+        }
+
+        #complimentBtn {
+            background: linear-gradient(90deg, var(--primary-blue), #66d1ff);
+            color: #012;
+            border: none;
+            padding: 10px 16px;
+            border-radius: 12px;
+            font-weight: 700;
+            box-shadow: 0 6px 18px rgba(77, 184, 255, 0.12);
+            cursor: pointer;
+        }
+
+        #complimentBox {
+            margin-top: 12px;
+            padding: 14px;
+            border-radius: 12px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+            display: inline-block;
+            max-width: 100%;
+            font-size: 1rem;
+        }
+
+        #complimentText {
+            font-weight: 600;
+            color: #fff;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="page-frame">
+        <div class="container">
+            <article class="card" id="tilt-card">
+                <div class="card-glow"></div>
+
+                <a class="external-link" href="https://dancia-exe.pages.dev/" target="_blank" rel="noopener noreferrer">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" style="opacity:.95">
+                        <path d="M14 3h7v7" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M10 14L21 3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                        <path d="M21 21H3V3" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    Visit Danica exe
+                </a>
+
+                <div class="card-inner">
+                    <div class="profile-wrap">
+                        <img class="profile-image" src="https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/Screenshot_2025-12-26_152158.webp" alt="Profile">
+                    </div>
+
+                    <h1 id="dynamic-h1">Our Journey</h1>
+
+                    <div id="timer-container">
+                        <small style="color:var(--text-muted); text-transform:uppercase; letter-spacing:1px; font-size:.75rem;">Time spent together</small>
+                        <div id="timer">Loading...</div>
+                    </div>
+
+                    <div id="compliment-area" aria-live="polite">
+                        <button id="complimentBtn" type="button">Need reassurance?</button>
+                        <div id="complimentBox" style="display:none">
+                            <div id="complimentText">You are amazing — click the button again for another one.</div>
+                        </div>
+                    </div>
+
+                    <div class="highlight-container" style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px; z-index: 2; position: relative;">
+                        
+                        <div class="item" style="text-align: left;">
+                            <span class="label" style="letter-spacing: 1px;">THE SUBJECT</span>
+                            <span class="value" style="font-weight: 600; font-size: 1.05rem;">Danica the silliest person I know ❤️</span>
+                        </div>
+
+                        <div class="item" style="text-align: left; background: rgba(255, 77, 109, 0.05); border-color: rgba(255, 77, 109, 0.15);">
+                            <span class="label" style="color: #ff4d6d; letter-spacing: 1px;"><i class="fa-solid fa-palette" style="margin-right: 4px;"></i> SPECIAL MILESTONE</span>
+                            <span class="value" style="font-weight: 600; font-size: 1.05rem;">first real kiss 3/8/2026 💖</span>
+                        </div>
+
+                    </div>
+                    <section class="grid">
+                        <div class="item full-width">
+                            <span class="label"><i class="fa-solid fa-circle-info"></i> Andy :P</span>
+                            <span class="value">Silly guy.</span>
+                        </div>
+                        <div class="item full-width">
+                            <span class="label"><i class="fa-solid fa-palette"></i> Favorite Color</span>
+                            <span class="value">Blue</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-shrimp"></i> Favorite Animal</span>
+                            <span class="value">Axolotl / Capybara</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-microphone-lines"></i> Music Artist</span>
+                            <span class="value">Whatever’s good / Blake Shelton</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-music"></i> Favorite Song</span>
+                            <span class="value">Anything good</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-film"></i> Favorite Movie</span>
+                            <span class="value">Spiderman: No Way Home</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-earth-americas"></i> Travel Goal</span>
+                            <span class="value">Idk</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-bowl-food"></i> Favorite Food</span>
+                            <span class="value">Pork Schnitzel</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-candy-cane"></i> Favorite Candy</span>
+                            <span class="value">Butterfingers / Swedish Fish</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-face-smile"></i> What Cheers Me Up</span>
+                            <span class="value">You <i class="fa-solid fa-heart heart-icon"></i></span>
+                        </div>
+                        <div class="item full-width">
+                            <span class="label"><i class="fa-solid fa-triangle-exclamation"></i> Fear</span>
+                            <span class="value">Death and losing my parents</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-heart-circle-xmark"></i> Hate in a Relationship</span>
+                            <span class="value">Being Creepy</span>
+                        </div>
+                        <div class="item">
+                            <span class="label"><i class="fa-solid fa-heart-circle-check"></i> Like in a Relationship</span>
+                            <span class="value">Honesty</span>
+                        </div>
+                        <div class="item full-width">
+                            <span class="label"><i class="fa-solid fa-user-heart"></i> What I Like About You</span>
+                            <span class="value">Personality / Humor</span>
+                        </div>
+                        <div class="item full-width">
+                            <span class="label"><i class="fa-solid fa-brain"></i> Struggles</span>
+                            <span class="value">None specified.</span>
+                        </div>
+                    </section>
+
+                    <footer>
+                        <p>Made with love <i class="fa-solid fa-heart heart-icon"></i></p>
+                    </footer>
+                </div>
+            </article>
+        </div>
+    </div>
+
+    <script>
+        const start = new Date("December 23, 2025 15:30:00");
+        const timerEl = document.getElementById('timer');
+        const h1El = document.getElementById('dynamic-h1');
+        const titleEl = document.getElementById('page-title');
+
+        function updateTimer() {
+            const now = new Date();
+            if (now < start) {
+                timerEl.textContent = "Starting soon...";
+                return;
+            }
+
+            // Calculate the month difference
+            let months = (now.getFullYear() - start.getFullYear()) * 12 + (now.getMonth() - start.getMonth());
+
+            // Calculate current anniversary day
+            let currentAnniversary = new Date(start);
+            currentAnniversary.setFullYear(start.getFullYear());
+            currentAnniversary.setMonth(start.getMonth() + months);
+
+            // If we haven't reached the exact day/time of the anniversary this month, go back one month
+            if (now < currentAnniversary) {
+                months--;
+                currentAnniversary = new Date(start);
+                currentAnniversary.setMonth(start.getMonth() + months);
+            }
+
+            const diff = now - currentAnniversary;
+            let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+
+            // User Logic: if days hit 30, it should be the next month
+            if (days >= 30) {
+                months++;
+                days = 0;
+            }
+
+            const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+            const minutes = Math.floor((diff / (1000 * 60)) % 60);
+            const seconds = Math.floor((diff / 1000) % 60);
+
+            const hh = String(hours).padStart(2, '0');
+            const mm = String(minutes).padStart(2, '0');
+            const ss = String(seconds).padStart(2, '0');
+
+            const monthLabel = months === 1 ? 'month' : 'months';
+            timerEl.textContent = `${months} ${monthLabel}, ${days}d ${hh}h ${mm}m ${ss}s`;
+
+            // Update Titles
+            const displayTitle = `Our ${months} Month Journey`;
+            if (h1El.textContent !== displayTitle) {
+                h1El.textContent = displayTitle;
+                titleEl.textContent = displayTitle;
+            }
+        }
+
+        setInterval(updateTimer, 1000);
+        updateTimer();
+
+        // Tilt Effect
+        (function() {
+            const card = document.getElementById('tilt-card');
+            if (!card) return;
+            let targetX = 0,
+                targetY = 0,
+                curX = 0,
+                curY = 0;
+
+            function updateRAF() {
+                curX += (targetX - curX) * 0.12;
+                curY += (targetY - curY) * 0.12;
+                card.style.transform = `perspective(1000px) rotateX(${curX}deg) rotateY(${curY}deg)`;
+                requestAnimationFrame(updateRAF);
+            }
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                targetY = ((e.clientX - rect.left) / rect.width - 0.5) * 12;
+                targetX = ((e.clientY - rect.top) / rect.height - 0.5) * -12;
+                card.style.setProperty('--x', `${e.clientX - rect.left}px`);
+                card.style.setProperty('--y', `${e.clientY - rect.top}px`);
+            });
+            card.addEventListener('mouseleave', () => {
+                targetX = 0;
+                targetY = 0;
+            });
+            requestAnimationFrame(updateRAF);
+        })();
+    </script>
+
+    <script>
+        (function() {
+            const compliments = [
+                "I care about you.",
+                "Your smile makes me happy.",
+                "I love who you are.",
+                "You always brighten up my day.",
+                "You are so thoughtful.",
+                "You always treat me well.",
+                "You lift me up literally.",
+                "You make my day better.",
+                "You are NOT hotter than me ;) .",
+                "I won't give up on you.",
+                "I love you more than you know.",
+                "You are my handsome boy.",
+                "Being near you boosts my mood.",
+                "Your laugh brings me joy.",
+                "You always find a way to make things better.",
+                "You make my life better.",
+                "I love your hugs.",
+                "You smell good :O",
+                 "You are important.",
+                 "You help me.",
+                 "I love you.",
+                 "You care ♡",
+                 "I love your voice.",
+                 "I am grateful for you.",
+                 "You calm me.",
+                  "I love talking to you.",
+                   "I love your smile.",
+                   "You can trust me.",
+                   "You make me feel loved.",
+                   "I relate to you.",
+                   "You are so strong 💪",
+                   "You got big muscles.",
+                   "A+D♡♡",
+                   "I love your humor.",
+                   "You matter to me.",
+                    "You make me feel safe.",
+                    "I can stare at you for hours.",
+                    "I can talk to you for hours.",
+                     "You make me happy.",
+                     "I get lost in your eyes.",
+                     "You are mine.",
+                      "Click the pfp 7 times.",
+                     "You are my person.",
+                     "You are my safe place.",
+                      "You make me feel heard.",
+                "You're smart."
+            ];
+
+            const btn = document.getElementById('complimentBtn');
+            const box = document.getElementById('complimentBox');
+            const text = document.getElementById('complimentText');
+
+            function showRandom() {
+                const idx = Math.floor(Math.random() * compliments.length);
+                text.textContent = compliments[idx];
+                box.style.display = 'inline-block';
+                // confetti celebration
+                if (typeof confetti === 'function') {
+                    confetti({
+                        particleCount: 90,
+                        spread: 70,
+                        origin: {
+                            y: 0.6
+                        },
+                        colors: ['#4db8ff', '#ffffff', '#ff4d4d']
+                    });
+                }
+            }
+
+            if (btn) btn.addEventListener('click', showRandom);
+
+            // small easter egg: clicking profile image 7 times shows a special compliment
+            (function profileEaster() {
+                const pr = document.querySelector('.profile-image');
+                if (!pr) return;
+                let clicks = 0;
+                pr.addEventListener('click', () => {
+                    clicks++;
+                    if (clicks >= 7) {
+                        text.textContent = "You are the most beautiful girl I have met and dated. ❤️";
+                        box.style.display = 'inline-block';
+                        if (typeof confetti === 'function') confetti({
+                            particleCount: 110,
+                            spread: 90,
+                            origin: {
+                                y: 0.6
+                            },
+                            colors: ['#ff4d4d', '#ffffff', '#4db8ff']
+                        });
+                        clicks = 0;
+                    }
+                    setTimeout(() => {
+                        clicks = 0;
+                    }, 2500);
+                });
+            })();
+        })();
+    </script>
+</body>
+
+</html>
