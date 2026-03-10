@@ -69,7 +69,7 @@ function start() {
 
     const links = [
       {icon:"fab fa-youtube",url:"https://www.youtube.com/@SirSnoopsiee",tip:"YouTube"},
-      {icon:"fab fa-github",url:"https://github.com/code-andrewy",tip:"GitHub"},
+      {icon:"fab fa-github",url:"https://github.com/SirSnoopsiee",tip:"GitHub"},
       {icon:"fas fa-envelope",url:"https://sirsnoopy.pages.dev/contact",tip:"Contact"}
     ]
 
