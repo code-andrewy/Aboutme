@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title id="page-title">Our Journey | Danica</title>
+
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js" defer></script>
+
+  <style>
+:root{
+  --primary-blue: #4db8ff;
+  --bg-dark: #0f172a;
+  --container-dark: rgba(30,41,59,0.7);
+  --text-light: #f8fafc;
+  --text-muted: #94a3b8;
+  --accent-glow: rgba(77,184,255,0.4);
+  --card-max-width: 650px;
+  --card-radius: 24px;
+  --card-padding: 40px;
+  --glass-border: rgba(255,255,255,0.08);
+  --heart-pink: #ff4d88;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+html, body { height: 100%; }
+body {
+  min-height: 100vh;
+  margin: 0;
+  font-family: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+  background: radial-gradient(circle at top right, #1e293b 0%, #0f172a 60%);
+  color: var(--text-light);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+.container{
+  width: 100%;
+  max-width: var(--card-max-width);
+  perspective: 1000px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card{
+  position: relative;
+  width: 100%;
+  background: var(--container-dark);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--glass-border);
+  padding: var(--card-padding);
+  box-shadow: 0 25px 50px -12px rgba(0,0,0,0.55);
+  transform-style: preserve-3d;
+  transition: box-shadow 220ms ease, transform 300ms ease;
+  z-index: 2;
+  max-height: min(90vh, 850px);
+  overflow-y: auto;
+  scrollbar-gutter: stable;
+}
+
+/* Custom Scrollbar */
+.card::-webkit-scrollbar { width: 6px; }
+.card::-webkit-scrollbar-track { background: transparent; }
+.card::-webkit-scrollbar-thumb { background: rgba(77,184,255,0.3); border-radius: 10px; }
+
+.card-glow{
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  border-radius: inherit;
+  z-index: 1;
+  background: radial-gradient(420px circle at var(--x,50%) var(--y,50%), rgba(77,184,255,0.18), transparent 55%);
+  mix-blend-mode: screen;
+}
+
+.visit-btn {
+  position: absolute;
+  top: 18px;
+  right: 18px;
+  z-index: 4;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(77,184,255,0.14);
+  color: var(--text-light);
+  padding: 8px 12px;
+  border-radius: 12px;
+  font-weight: 600;
+  font-size: .9rem;
+  text-decoration: none;
+  transition: transform .18s ease;
+}
+.visit-btn:hover { transform: translateY(-3px); background: rgba(77,184,255,0.06); }
+
+.profile-wrap{
+  position: relative;
+  width: 140px;
+  height: 140px;
+  margin: 0 auto 20px;
+  z-index: 3;
+}
+.profile-image{
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+  border: 3px solid var(--primary-blue);
+  display: block;
+}
+.profile-wrap::after{
+  content: '';
+  position: absolute;
+  inset: -6px;
+  border-radius: 50%;
+  background: var(--primary-blue);
+  filter: blur(14px);
+  opacity: .28;
+  z-index: -1;
+  animation: pulseGlow 3s infinite alternate;
+}
+@keyframes pulseGlow{ from{ transform: scale(1); opacity:.2 } to{ transform: scale(1.08); opacity:.5 } }
+
+h1{
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 22px;
+  background: linear-gradient(90deg,#fff,var(--primary-blue));
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+#timer-container{
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(77,184,255,0.14);
+  padding: 18px;
+  border-radius: 18px;
+  text-align: center;
+  margin-bottom: 22px;
+}
+#timer{
+  font-size: 1.6rem;
+  font-weight: 700;
+  color: var(--primary-blue);
+  font-variant-numeric: tabular-nums;
+  margin-top: 6px;
+}
+
+.grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 14px;
+}
+
+.item{
+  padding: 14px;
+  background: rgba(255,255,255,0.03);
+  border-radius: 12px;
+  border: 1px solid rgba(255,255,255,0.03);
+  transition: transform .28s ease;
+}
+.item:hover{ transform: translateY(-4px); background: rgba(77,184,255,0.08); border-color: var(--primary-blue); }
+
+.label{ font-size: .72rem; color: var(--primary-blue); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.value{ font-size: .98rem; color: var(--text-light); }
+.full-width{ grid-column: 1 / -1; }
+
+/* Pulsing Heart Animation */
+.heart-icon, .fa-heart {
+  color: #ff4d4d;
+  display: inline-block;
+  animation: heartPulse 1.5s ease-in-out infinite;
+  vertical-align: middle;
+}
+@keyframes heartPulse {
+  0% { transform: scale(1); }
+  15% { transform: scale(1.25); }
+  30% { transform: scale(1); }
+  45% { transform: scale(1.15); }
+  60% { transform: scale(1); }
+}
+
+/* Special Kiss Style */
+.kiss-item {
+  background: rgba(255, 77, 136, 0.08);
+  border: 1px solid rgba(255, 77, 136, 0.2);
+}
+.kiss-item:hover {
+  background: rgba(255, 77, 136, 0.15);
+  border-color: var(--heart-pink);
+}
+
+footer{ margin-top: 22px; text-align: center; color: var(--text-muted); font-size: .85rem; }
+
+@media (max-width: 500px){
+  .grid{ grid-template-columns: 1fr; }
+  .card{ padding: 20px; }
+  h1{ font-size: 1.5rem; }
+  .profile-wrap{ width: 110px; height: 110px; }
+}
+
+#compliment-area { text-align:center; margin: 12px 0 20px; z-index:3; position:relative; }
+#complimentBtn {
+  background: linear-gradient(90deg,var(--primary-blue),#66d1ff);
+  color: #012;
+  border: none;
+  padding: 10px 16px;
+  border-radius: 12px;
+  font-weight: 700;
+  box-shadow: 0 6px 18px rgba(77,184,255,0.12);
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+#complimentBtn:active { transform: scale(0.95); }
+#complimentBox {
+  margin-top: 12px;
+  padding: 14px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.03);
+  display: inline-block;
+  max-width: 100%;
+  font-size: 1rem;
+}
+#complimentText { font-weight: 600; color: #fff; }
+  </style>
+</head>
+<body>
+  <main class="container">
+    <section class="card" id="tilt-card">
+      <div class="card-glow" aria-hidden="true"></div>
+
+      <a class="visit-btn" href="https://andy-exe.pages.dev/" target="_blank" rel="noopener noreferrer">
+        <i class="fa-solid fa-arrow-up-right-from-square"></i>
+       Visit Andy exe
+      </a>
+
+      <div style="position:relative; z-index:2;">
+        <div class="profile-wrap">
+          <img class="profile-image" src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/Screenshot_2026-01-02_153005.webp" alt="Danica portrait">
+        </div>
+
+        <h1 id="dynamic-h1">Our Journey</h1>
+
+        <div id="timer-container">
+          <small style="color:var(--text-muted); letter-spacing: 1px;">TIME SPENT TOGETHER</small>
+          <div id="timer">Loading...</div>
+        </div>
+
+        <div id="compliment-area" aria-live="polite">
+          <button id="complimentBtn" type="button">Need reassurance?</button>
+          <div id="complimentBox" style="display:none">
+            <div id="complimentText">You are amazing — click the button again for another one.</div>
+          </div>
+        </div>
+
+        <div class="grid" role="list">
+          <div class="item full-width" role="listitem">
+            <div class="label"><i class="fa-solid fa-user-sparkles"></i> The Subject</div>
+            <div class="value">Danica the silliest person I know <i class="fa-solid fa-heart heart-icon" style="margin-left:8px" id="loveBtn"></i></div>
+          </div>
+
+          <div class="item full-width kiss-item" role="listitem">
+            <div class="label" style="color:var(--heart-pink);"><i class="fa-solid fa-kiss-wink-heart"></i> Special Milestone</div>
+            <div class="value" style="font-weight: 600;">first real kiss 3/8/2026 <i class="fa-solid fa-heart heart-icon" style="margin-left:8px; color:var(--heart-pink);"></i></div>
+          </div>
+
+          <div class="item" role="listitem">
+            <div class="label"><i class="fa-solid fa-shrimp"></i> Animal</div>
+            <div class="value">Axolotl</div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="label"><i class="fa-solid fa-microphone"></i> Artist</div>
+            <div class="value">Luke Bryan</div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="label"><i class="fa-solid fa-cube"></i> Block</div>
+            <div class="value">Dirt</div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="label"><i class="fa-solid fa-music"></i> Song</div>
+            <div class="value">Buy Dirt</div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="label"><i class="fa-solid fa-film"></i> Movies</div>
+            <div class="value">Home Alone 1 &amp; 2</div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="label"><i class="fa-solid fa-plane"></i> Goal</div>
+            <div class="value">France</div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="label"><i class="fa-solid fa-bowl-food"></i> Food</div>
+            <div class="value">Spaghetti</div>
+          </div>
+          <div class="item" role="listitem">
+            <div class="label"><i class="fa-solid fa-cookie"></i> Treats</div>
+            <div class="value">Ferrero &amp; Sour Patch</div>
+          </div>
+          <div class="item full-width" role="listitem">
+            <div class="label"><i class="fa-solid fa-brain"></i> Struggles</div>
+            <div class="value">Caring too much about others' opinions.</div>
+          </div>
+          <div class="item full-width" role="listitem">
+            <div class="label"><i class="fa-solid fa-skull"></i> Biggest Fear</div>
+            <div class="value">Dad</div>
+          </div>
+        </div>
+
+        <footer>
+          Built with <i class="fa-solid fa-heart heart-icon"></i> for Danica
+        </footer>
+      </div>
+    </section>
+  </main>
+
+  <script>
+    const startDate = new Date("December 23, 2025 15:30:00");
+    const timerEl = document.getElementById('timer');
+    const h1El = document.getElementById('dynamic-h1');
+    const titleEl = document.getElementById('page-title');
+
+    function updateTimer() {
+      const now = new Date();
+      if (now < startDate) {
+        timerEl.textContent = "Starting soon...";
+        return;
+      }
+
+      let months = (now.getFullYear() - startDate.getFullYear()) * 12 + (now.getMonth() - startDate.getMonth());
+      
+      let anniversaryThisMonth = new Date(startDate);
+      anniversaryThisMonth.setFullYear(now.getFullYear());
+      anniversaryThisMonth.setMonth(now.getMonth());
+
+      if (now < anniversaryThisMonth) {
+        months--;
+        anniversaryThisMonth = new Date(startDate);
+        anniversaryThisMonth.setMonth(startDate.getMonth() + months);
+      }
+
+      const diff = now - anniversaryThisMonth;
+      let days = Math.floor(diff / (1000 * 60 * 60 * 24));
+      
+      const hours = Math.floor((diff / (1000 * 60 * 60)) % 24);
+      const minutes = Math.floor((diff / (1000 * 60)) % 60);
+      const seconds = Math.floor((diff / 1000) % 60);
+
+      const hh = String(hours).padStart(2, '0');
+      const mm = String(minutes).padStart(2, '0');
+      const ss = String(seconds).padStart(2, '0');
+
+      const monthLabel = months === 1 ? 'month' : 'months';
+      timerEl.textContent = `${months} ${monthLabel}, ${days}d ${hh}h ${mm}m ${ss}s`;
+      
+      const dynamicTitle = `Our ${months} Month Journey`;
+      if (h1El.textContent !== dynamicTitle) {
+        h1El.textContent = dynamicTitle;
+        titleEl.textContent = dynamicTitle + " | Danica";
+      }
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    // Confetti
+    function celebrate() {
+      if (typeof confetti === 'function') {
+        confetti({ 
+          particleCount: 110, 
+          spread: 80, 
+          origin: { y: 0.6 }, 
+          colors: ['#4db8ff', '#ffffff', '#ff4d88', '#ff4d4d'] 
+        });
+      }
+    }
+    document.getElementById('loveBtn').addEventListener('click', celebrate);
+
+    // Tilt Logic
+    (function(){
+      const card = document.getElementById('tilt-card');
+      if (!card) return;
+      let targetX = 0, targetY = 0, curX = 0, curY = 0;
+      function updateRAF(){
+        curX += (targetX - curX) * 0.12;
+        curY += (targetY - curY) * 0.12;
+        card.style.transform = `perspective(1000px) rotateX(${curX}deg) rotateY(${curY}deg)`;
+        requestAnimationFrame(updateRAF);
+      }
+      card.addEventListener('mousemove', (e) => {
+        const rect = card.getBoundingClientRect();
+        targetY = ((e.clientX - rect.left) / rect.width - 0.5) * 12;
+        targetX = ((e.clientY - rect.top) / rect.height - 0.5) * -12;
+        card.style.setProperty('--x', `${e.clientX - rect.left}px`);
+        card.style.setProperty('--y', `${e.clientY - rect.top}px`);
+      });
+      card.addEventListener('mouseleave', () => { targetX = 0; targetY = 0; });
+      requestAnimationFrame(updateRAF);
+    })();
+
+    // Compliment feature
+    (function(){
+      const compliments = [
+        "You’re more hot than you realize.",
+        "Your hug always makes my day better.",
+        "You make small moments unforgettable.",
+        "I love how you care so much.",
+        "You light up stupidly dark days.",
+        "You’re stronger than you think.",
+        "You’re the kindest person I know.",
+        "I’m proud of you every single day.",
+        "I love you",
+        "I love you, turkey 🦃",
+        "97.5 WOKQ is a good station.",
+        "You make my brain happy.",
+        "Your smile makes my heart go boom boom 💓 ."
+      ];
+
+      const btn = document.getElementById('complimentBtn');
+      const box = document.getElementById('complimentBox');
+      const text = document.getElementById('complimentText');
+
+      function showRandom() {
+        const idx = Math.floor(Math.random() * compliments.length);
+        text.textContent = compliments[idx];
+        box.style.display = 'inline-block';
+        celebrate();
+      }
+
+      btn.addEventListener('click', showRandom);
+    })();
+  </script>
+</body>
+</html>
