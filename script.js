@@ -71,6 +71,7 @@ function start() {
       {icon:"fab fa-youtube",url:"https://www.youtube.com/@SirSnoopsiee",tip:"YouTube"},
       {icon:"fab fa-github",url:"https://github.com/SirSnoopsiee",tip:"GitHub"},
       {icon:"fas fa-envelope",url:"https://sirsnoopy.pages.dev/contact",tip:"Contact"}
+      {icon:"fa-brands fa-discord",url:"https://discordapp.com/users/1478125540828385350",tip:"Discord"}
     ]
 
     el.socialRow.innerHTML = links.map(l =>
