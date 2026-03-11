@@ -2,7 +2,7 @@ const $ = s => document.querySelector(s)
 
 const CONFIG = {
   weatherURL: "https://api.weather.gov/gridpoints/GYX/47,32/forecast/hourly",
-  phrases: ["Modern UI", "Web Apps", "Cybersecurity", "JavaScript", "Snoopy :P"]
+  phrases: ["Modern UI", "Web Apps", "Cybersecurity", "JavaScript", "Snoopy Enthusiast"]
 }
 
 const state = { el: null }
