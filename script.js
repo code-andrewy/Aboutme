@@ -2,13 +2,12 @@ const $ = s => document.querySelector(s)
 
 const CONFIG = {
   weatherURL: "https://api.weather.gov/gridpoints/GYX/47,32/forecast/hourly",
-  phrases: ["Modern UI", "Web Apps", "Cybersecurity", "JavaScript"]
+  phrases: ["Modern UI", "Web Apps", "Cybersecurity", "JavaScript", "Snoopy :P"]
 }
 
 const state = { el: null }
 
 function start() {
-
   const el = {
     card: $("#tilt-card"),
     container: $("#tilt-container"),
@@ -17,27 +16,41 @@ function start() {
     time: $("#time"),
     temp: $("#temp"),
     cond: $("#cond"),
-    glow: $("#glow")
+    glow: $("#glow"),
+    ctxMenu: $("#context-menu"),
+    videoModal: $("#video-modal")
   }
 
   state.el = el
 
-  function weather() {
-    fetch(CONFIG.weatherURL)
-      .then(r => r.ok ? r.json() : null)
-      .then(data => {
-        const cur = data?.properties?.periods?.[0]
-        if (el.temp) el.temp.textContent = cur ? `${cur.temperature}°F` : "72°F"
-        if (el.cond) el.cond.textContent = cur ? cur.shortForecast : "Clear"
+  // --- Clock ---
+  function clock() {
+    if (el.time) {
+      el.time.textContent = new Date().toLocaleTimeString([], {
+        hour: "2-digit",
+        minute: "2-digit"
       })
-      .catch(() => {
-        if (el.temp) el.temp.textContent = "72°F"
-        if (el.cond) el.cond.textContent = "Clear"
-      })
+    }
   }
 
-  let p = 0, c = 0, del = false
+  // --- Weather ---
+  async function weather() {
+    try {
+      const r = await fetch(CONFIG.weatherURL)
+      if (!r.ok) throw new Error()
+      const data = await r.json()
+      const cur = data?.properties?.periods?.[0]
+      
+      if (el.temp) el.temp.textContent = cur ? `${cur.temperature}°F` : "72°F"
+      if (el.cond) el.cond.textContent = cur ? cur.shortForecast : "Clear"
+    } catch (err) {
+      if (el.temp) el.temp.textContent = "72°F"
+      if (el.cond) el.cond.textContent = "Clear"
+    }
+  }
 
+  // --- Typewriter ---
+  let p = 0, c = 0, del = false
   function type() {
     if (!el.typewriter) return
     const phrase = CONFIG.phrases[p] || ""
@@ -64,32 +77,24 @@ function start() {
     }
   }
 
+  // --- Social Links ---
   function socials() {
     if (!el.socialRow) return
-
     const links = [
-      { icon: "fab fa-youtube", url: "https://www.youtube.com/@SirSnoopsiee", tip: "YouTube" },
-      { icon: "fab fa-github", url: "https://github.com/SirSnoopsiee", tip: "GitHub" },
-      { icon: "fas fa-envelope", url: "https://sirsnoopy.pages.dev/contact", tip: "Contact" }, // Added missing comma here
-      { icon: "fa-brands fa-discord", url: "https://discordapp.com/users/1478125540828385350", tip: "Discord" }
+      { icon: "fab fa-github", url: "https://github.com/SirSnoopsiee", tip: "GitHub", class: "github" },
+      { icon: "fab fa-youtube", url: "https://www.youtube.com/@SirSnoopsiee", tip: "YouTube", class: "youtube" },
+      { icon: "fas fa-envelope", url: "https://sirsnoopy.pages.dev/contact", tip: "Contact", class: "contact" },
+      { icon: "fa-brands fa-discord", url: "https://discordapp.com/users/1478125540828385350", tip: "Discord", class: "discord" }
     ]
 
     el.socialRow.innerHTML = links.map(l =>
-      `<a href="${l.url}" target="_blank" class="social-btn" data-tooltip="${l.tip}" aria-label="${l.tip}">
+      `<a href="${l.url}" target="_blank" class="social-btn ${l.class}" data-tooltip="${l.tip}" aria-label="${l.tip}">
         <i class="${l.icon}" style="font-size:22px"></i>
       </a>`
     ).join("")
   }
 
-  function clock() {
-    if (el.time) {
-      el.time.textContent = new Date().toLocaleTimeString([], {
-        hour: "2-digit",
-        minute: "2-digit"
-      })
-    }
-  }
-
+  // --- 3D Tilt Effect ---
   el.container?.addEventListener("pointermove", e => {
     if (!el.card || window.innerWidth <= 768) return
 
@@ -100,14 +105,32 @@ function start() {
     el.glow?.style.setProperty("--mouse-x", `${(x / r.width) * 100}%`)
     el.glow?.style.setProperty("--mouse-y", `${(y / r.height) * 100}%`)
 
-    el.card.style.transform =
-      `rotateX(${(y - r.height / 2) / 20}deg) rotateY(${(r.width / 2 - x) / 20}deg)`
+    const xRotation = (y - r.height / 2) / 20
+    const yRotation = (r.width / 2 - x) / 20
+
+    el.card.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`
   })
 
   el.container?.addEventListener("pointerleave", () => {
     if (el.card) el.card.style.transform = "rotateX(0deg) rotateY(0deg)"
   })
 
+  // --- Context Menu ---
+  window.addEventListener("contextmenu", e => {
+    e.preventDefault()
+    if (!el.ctxMenu) return
+    el.ctxMenu.style.display = "block"
+    el.ctxMenu.style.left = `${e.pageX}px`
+    el.ctxMenu.style.top = `${e.pageY}px`
+  })
+
+  window.addEventListener("click", () => {
+    if (el.ctxMenu) el.ctxMenu.style.display = "none"
+  })
+
+  $("#ctx-refresh")?.addEventListener("click", () => location.reload())
+
+  // --- Initialize ---
   clock()
   setInterval(clock, 1000)
   type()
