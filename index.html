@@ -1,116 +1,117 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
-<title>Sirsnoopy</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+  <title>Sirsnoopy</title>
 
-<link rel="icon" type="image/png" href="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/unwatermarked_Gemini_Generated_Image_5cxwxp5cxwxp5cxw.png" />
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
-
-<link rel="stylesheet" href="style.css">
+  <link rel="icon" type="image/png" href="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/unwatermarked_Gemini_Generated_Image_5cxwxp5cxwxp5cxw.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-<div id="bg-overlay"></div>
+  <div id="bg-overlay"></div>
 
-<div id="context-menu" aria-hidden="true" role="menu">
-  <div class="menu-item" id="ctx-refresh" role="menuitem" tabindex="0">
-    <i class="fa-solid fa-rotate"></i>
-    <span style="margin-left:8px">Refresh Page</span>
-  </div>
-  <div class="menu-item" id="ctx-close" role="menuitem" tabindex="0">
-    <i class="fa-solid fa-xmark"></i>
-    <span style="margin-left:8px">Close Menu</span>
-  </div>
-</div>
-
-<div class="container" id="tilt-container">
-  <main class="card" id="tilt-card" role="application" aria-label="Sirsnoopy profile card">
-
-    <div class="card-glow" id="glow"></div>
-
-    <div class="profile-section">
-      <div class="pfp-outer" tabindex="0">
-        <div class="pfp-inner">
-          <img
-            src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/unwatermarked_Gemini_Generated_Image_5cxwxp5cxwxp5cxw.png"
-            alt="Sirsnoopy Avatar"
-            class="pfp-img">
-        </div>
-      </div>
-
-      <div class="social-row">
-        <a href="https://github.com/SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" aria-label="GitHub">
-          <i class="fa-brands fa-github"></i>
-        </a>
-
-        <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" aria-label="YouTube">
-          <i class="fa-brands fa-youtube"></i>
-        </a>
-
-        <a href="https://discord.com/users/1478125540828385350" target="_blank" rel="noopener" class="social-btn" aria-label="Discord">
-          <i class="fa-brands fa-discord"></i>
-        </a>
-      </div>
+  <div id="context-menu" aria-hidden="true" role="menu">
+    <div class="menu-item" id="ctx-refresh" role="menuitem" tabindex="0">
+      <i class="fa-solid fa-rotate"></i>
+      <span style="margin-left:8px">Refresh Page</span>
     </div>
+    <div class="menu-item" id="ctx-close" role="menuitem" tabindex="0">
+      <i class="fa-solid fa-xmark"></i>
+      <span style="margin-left:8px">Close Menu</span>
+    </div>
+  </div>
 
-    <div class="content-section">
-
-      <div>
-        <p class="greeting">Hello 👋 my name is</p>
-        <img
-          src="https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/image-removebg-preview%20(1).png"
-          alt="sirsnoopy"
-          class="name-logo">
+  <div class="container" id="tilt-container">
+    <main class="card" id="tilt-card" role="application" aria-label="Sirsnoopy profile card">
+      
+      <div class="card-glow" id="glow"></div>
+      
+      <div class="wave-container">
+        <svg class="waves" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"
+          viewBox="0 24 150 28" preserveAspectRatio="none" shape-rendering="auto">
+          <defs>
+            <path id="gentle-wave" d="M-160 44c30 0 58-18 88-18s 58 18 88 18 58-18 88-18 58 18 88 18 v44h-352z" />
+          </defs>
+          <g class="parallax">
+            <use xlink:href="#gentle-wave" x="48" y="0" />
+            <use xlink:href="#gentle-wave" x="48" y="3" />
+            <use xlink:href="#gentle-wave" x="48" y="5" />
+            <use xlink:href="#gentle-wave" x="48" y="7" />
+          </g>
+        </svg>
       </div>
 
-      <div class="typewriter-wrap">
-        Experience in 
-        <span id="typewriter" style="color:var(--blue)"></span>
-        <span class="cursor"></span>
-      </div>
-
-      <p class="bio">
-        A student who started coding at age 12. I make and find cool stuff I also like snoopy :O
-      </p>
-
-      <div class="info-grid">
-
-        <div class="stat-box">
-          <i class="fa-regular fa-clock"></i>
-          <div>
-            <span class="stat-val" id="time">00:00</span>
-            <span class="stat-label">Local Time</span>
+      <div class="profile-section">
+        <div class="pfp-outer" tabindex="0">
+          <div class="pfp-inner">
+            <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/unwatermarked_Gemini_Generated_Image_5cxwxp5cxwxp5cxw.png"
+                 alt="Sirsnoopy Avatar" class="pfp-img">
           </div>
         </div>
 
-        <div class="stat-box">
-          <i class="fa-solid fa-cloud-sun"></i>
-          <div>
-            <span class="stat-val" id="temp">--°F</span>
-            <span class="stat-label" id="cond">Loading...</span>
-          </div>
+        <div class="social-row">
+          <a href="https://github.com/SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" aria-label="GitHub">
+            <i class="fa-brands fa-github"></i>
+          </a>
+          <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" aria-label="YouTube">
+            <i class="fa-brands fa-youtube"></i>
+          </a>
+          <a href="https://discord.com/users/1478125540828385350" target="_blank" rel="noopener" class="social-btn" aria-label="Discord">
+            <i class="fa-brands fa-discord"></i>
+          </a>
         </div>
-
       </div>
 
-    </div>
+      <div class="content-section">
+        <div>
+          <p class="greeting">Hello 👋 my name is</p>
+          <img src="https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/image-removebg-preview%20(1).png"
+               alt="sirsnoopy" class="name-logo">
+        </div>
 
-  </main>
-</div>
+        <div class="typewriter-wrap">
+          Experience in 
+          <span id="typewriter" style="color:var(--accent-blue)"></span>
+          <span class="cursor"></span>
+        </div>
 
-<div class="video-modal" id="video-modal" aria-hidden="true">
-  <div class="video-frame" role="dialog" aria-modal="true" aria-label="Intro video">
-    <div id="intro-player" style="width:100%;height:100%;"></div>
+        <p class="bio">
+          A student who started coding at age 12. I make and find cool stuff. I also like snoopy :O
+        </p>
+
+        <div class="info-grid">
+          <div class="stat-box">
+            <i class="fa-regular fa-clock"></i>
+            <div>
+              <span class="stat-val" id="time">00:00</span>
+              <span class="stat-label">Local Time</span>
+            </div>
+          </div>
+
+          <div class="stat-box">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <div>
+              <span class="stat-val" id="temp">--°F</span>
+              <span class="stat-label" id="cond">Loading...</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </main>
   </div>
-</div>
 
-<script src="script.js" defer></script>
+  <div class="video-modal" id="video-modal" aria-hidden="true">
+    <div class="video-frame" role="dialog" aria-modal="true" aria-label="Intro video">
+      <div id="intro-player" style="width:100%;height:100%;"></div>
+    </div>
+  </div>
 
+  <script src="script.js" defer></script>
 </body>
 </html>
