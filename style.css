@@ -2,226 +2,162 @@
 :root {
   --accent-blue: #00d2ff;
   --accent-yellow: #ffd700;
-  --accent-green: #4caf50; /* Matches your Periodic Table logo */
-  --glass: rgba(15, 20, 35, 0.72);
-  --border: rgba(255, 255, 255, 0.12);
+  --glass: rgba(15, 20, 35, 0.45);
+  --border: rgba(255, 255, 255, 0.08);
   --text: #ffffff;
   --muted: #cbd5e1;
   --bg-fallback: url('https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg');
-  --ease-bouncy: cubic-bezier(0.34, 1.56, 0.64, 1);
   --ease-smooth: cubic-bezier(0.23, 1, 0.32, 1);
-  --card-radius: 40px;
-  --card-padding: clamp(24px, 5vw, 56px);
-  --glass-blur: 35px;
-  --max-width: 1100px;
+  --card-radius: 32px;
 }
 
-/* --- RESET & BASE --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body {
-  height: 100%;
-  font-family: 'Plus Jakarta Sans', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  color: var(--text);
-  background: linear-gradient(rgba(0,0,0,.5), rgba(0,0,0,.5)), var(--bg-fallback);
-  background-size: cover;
-  background-position: center;
-  background-attachment: fixed;
-}
 
 body {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+  font-family: 'Plus Jakarta Sans', sans-serif;
+  background: #05070a; /* Dark fallback */
+  color: var(--text);
   padding: 20px;
 }
 
-/* --- THE CARD CONTAINER --- */
-.container {
-  width: 100%;
-  max-width: var(--max-width);
-  perspective: 2000px;
-  z-index: 2;
-  animation: cardAppear .85s var(--ease-smooth);
+/* Background image fix */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.3)), var(--bg-fallback);
+  background-size: cover;
+  background-position: center;
+  z-index: -1;
 }
 
 .card {
   width: 100%;
+  max-width: 1000px;
   background: var(--glass);
+  backdrop-filter: blur(25px);
   border: 1px solid var(--border);
   border-radius: var(--card-radius);
-  padding: var(--card-padding);
+  padding: 50px;
   display: grid;
-  grid-template-columns: 1fr; /* Mobile view */
-  gap: clamp(30px, 5vw, 60px);
-  backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(180%);
-  box-shadow: 0 45px 100px rgba(0,0,0,.65);
-  position: relative;
-  overflow: visible; /* Keeps tooltips visible */
+  grid-template-columns: 280px 1fr; /* Profile Left, Content Right */
+  gap: 50px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+  align-items: center;
 }
 
-@media (min-width: 850px) {
-  .card { 
-    grid-template-columns: 300px 1fr; /* Desktop view */
-    align-items: start;
-  }
-}
-
-/* --- PROFILE SIDE --- */
+/* Profile Section */
 .profile-section {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 24px;
-  z-index: 2;
-}
-
-@media (min-width: 850px) {
-  .profile-section {
-    border-right: 1px solid var(--border);
-    padding-right: clamp(30px, 4vw, 60px);
-  }
+  gap: 25px;
 }
 
 .pfp-outer {
-  width: clamp(140px, 20vw, 220px);
-  height: clamp(140px, 20vw, 220px);
+  width: 200px;
+  height: 200px;
   background: var(--accent-yellow);
   border-radius: 50%;
-  padding: 6px;
-  box-shadow: 0 15px 40px rgba(0,0,0,.4);
-  transition: transform .5s var(--ease-bouncy);
+  padding: 5px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.pfp-outer:hover { transform: scale(1.05) rotate(2deg); }
-.pfp-inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 4px solid rgba(0,0,0,.2); }
+.pfp-inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 4px solid rgba(0,0,0,0.1); }
 .pfp-img { width: 100%; height: 100%; object-fit: cover; }
 
-/* --- SOCIALS --- */
-.social-row {
-  display: flex;
-  gap: 12px;
-  justify-content: center;
-  flex-wrap: wrap;
-}
-
+.social-row { display: flex; gap: 12px; }
 .social-btn {
-  width: 50px;
-  height: 50px;
-  border-radius: 14px;
-  background: rgba(255,255,255,.08);
+  width: 45px;
+  height: 45px;
+  background: rgba(255,255,255,0.06);
   border: 1px solid var(--border);
-  color: var(--text);
+  border-radius: 12px;
+  color: white;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  transition: all .3s var(--ease-smooth);
-  position: relative;
+  transition: 0.3s;
 }
+.social-btn:hover { background: rgba(255,255,255,0.12); transform: translateY(-3px); }
 
-.social-btn:hover {
-  background: rgba(255,255,255,0.15);
-  transform: translateY(-5px);
-  border-color: var(--accent-blue);
-}
-
-.social-btn::after {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: -40px;
-  left: 50%;
-  transform: translateX(-50%) translateY(10px);
-  background: #000;
-  padding: 5px 10px;
-  border-radius: 6px;
-  font-size: 11px;
-  opacity: 0;
-  pointer-events: none;
-  transition: all 0.2s ease;
-  white-space: nowrap;
-  border: 1px solid var(--border);
-}
-
-.social-btn:hover::after { opacity: 1; transform: translateX(-50%) translateY(0); }
-
-/* --- CONTENT SIDE --- */
-.content-section {
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
+/* Content Section */
+.content-section { display: flex; flex-direction: column; gap: 20px; }
 
 .greeting {
   color: var(--accent-blue);
   text-transform: uppercase;
-  letter-spacing: 3px;
+  letter-spacing: 2px;
   font-weight: 800;
-  font-size: 0.75rem;
+  font-size: 0.7rem;
+  margin-bottom: 8px;
 }
 
-.name-logo-wrapper {
-  margin-bottom: 5px;
+.name-logo { max-width: 320px; filter: drop-shadow(0 10px 20px rgba(0,0,0,0.3)); }
+
+.experience-text {
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
-/* --- THE PILLS --- */
-.pill-group {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 10px;
-  margin: 5px 0;
-}
-
-.pill {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  padding: 7px 16px;
-  background: rgba(255, 255, 255, 0.05);
+.bio-box {
+  background: rgba(0, 0, 0, 0.25);
+  padding: 20px 25px;
+  border-radius: 20px;
   border: 1px solid var(--border);
-  border-radius: 100px;
-  font-size: 0.85rem;
-  font-weight: 500;
   color: var(--muted);
-  backdrop-filter: blur(10px);
-  transition: all 0.3s ease;
-}
-
-.pill:hover {
-  background: rgba(255, 255, 255, 0.1);
-  border-color: var(--accent-blue);
-}
-
-.pill i {
-  color: var(--accent-blue);
-  font-size: 0.9rem;
-}
-
-/* Experience Highlight Pill */
-.pill.exp {
-  border-color: rgba(76, 175, 80, 0.3); /* Green tint */
-}
-
-.pill.exp i { color: var(--accent-green); }
-
-/* --- BIO BOX --- */
-.bio {
-  color: var(--muted);
-  font-size: 1rem;
   line-height: 1.6;
-  background: rgba(0,0,0,0.2);
-  padding: 22px;
-  border-radius: 24px;
-  border: 1px solid rgba(255,255,255,0.08);
 }
 
-@keyframes cardAppear { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+/* Status Boxes at the Bottom */
+.status-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 15px;
+}
 
-/* Mobile Adjustments */
-@media (max-width: 600px) {
-  .card { padding: 24px; border-radius: 32px; }
-  .profile-section { border-bottom: 1px solid var(--border); padding-bottom: 24px; }
+.status-card {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 15px 20px;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.status-card i {
+  font-size: 1.4rem;
+  color: var(--accent-blue);
+}
+
+.status-info { display: flex; flex-direction: column; }
+
+.status-val {
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: white;
+}
+
+.status-label {
+  font-size: 0.8rem;
+  color: var(--muted);
+}
+
+/* Mobile Responsive */
+@media (max-width: 850px) {
+  .card { 
+    grid-template-columns: 1fr; 
+    padding: 30px; 
+    text-align: center;
+  }
+  .profile-section { padding-bottom: 30px; border-bottom: 1px solid var(--border); }
+  .status-grid { grid-template-columns: 1fr; }
+  .status-card { justify-content: center; }
+  .name-logo { margin: 0 auto; }
 }
