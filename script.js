@@ -2,7 +2,7 @@ const $ = s => document.querySelector(s)
 
 const CONFIG = {
   weatherURL: "https://api.weather.gov/gridpoints/GYX/47,32/forecast/hourly",
-  phrases: ["Modern UI", "Web Apps", "Cybersecurity", "JavaScript", "Snoopy Enthusiast"]
+  phrases: ["Modern UI", "Web Apps", "Cybersecurity", "JavaScript", "Snoopy"]
 }
 
 const state = { el: null }
@@ -23,76 +23,97 @@ function start() {
   state.el = el
 
   // --- Clock ---
-  const updateClock = () => {
+  function clock() {
     if (el.time) {
       el.time.textContent = new Date().toLocaleTimeString([], {
         hour: "2-digit",
-        minute: "2-digit",
-        second: "2-digit" // Added seconds for better visual feedback
+        minute: "2-digit"
       })
     }
   }
 
   // --- Weather ---
-  async function fetchWeather() {
+  async function weather() {
     try {
-      const response = await fetch(CONFIG.weatherURL)
-      const data = await response.json()
+      const r = await fetch(CONFIG.weatherURL)
+      if (!r.ok) throw new Error()
+      const data = await r.json()
       const cur = data?.properties?.periods?.[0]
       
       if (el.temp) el.temp.textContent = cur ? `${cur.temperature}°F` : "72°F"
-      if (el.cond) el.cond.textContent = cur ? cur.shortForecast : "Clear Sky"
+      if (el.cond) el.cond.textContent = cur ? cur.shortForecast : "Clear"
     } catch (err) {
-      console.error("Weather Error:", err)
       if (el.temp) el.temp.textContent = "72°F"
-      if (el.cond) el.cond.textContent = "Clear Sky"
+      if (el.cond) el.cond.textContent = "Clear"
     }
   }
 
   // --- Typewriter ---
-  let pIndex = 0, charIndex = 0, isDeleting = false
-  function handleType() {
-    const phrase = CONFIG.phrases[pIndex]
-    
-    if (!isDeleting) {
-      charIndex++
-      el.typewriter.textContent = phrase.slice(0, charIndex)
-      if (charIndex === phrase.length) {
-        isDeleting = true
-        setTimeout(handleType, 2000)
+  let p = 0, c = 0, del = false
+  function type() {
+    if (!el.typewriter) return
+    const phrase = CONFIG.phrases[p] || ""
+
+    if (!del) {
+      c++
+      el.typewriter.textContent = phrase.slice(0, c)
+      if (c === phrase.length) {
+        del = true
+        setTimeout(type, 2000)
         return
       }
-      setTimeout(handleType, 100)
+      setTimeout(type, 90)
     } else {
-      charIndex--
-      el.typewriter.textContent = phrase.slice(0, charIndex)
-      if (charIndex === 0) {
-        isDeleting = false
-        pIndex = (pIndex + 1) % CONFIG.phrases.length
-        setTimeout(handleType, 500)
+      c--
+      el.typewriter.textContent = phrase.slice(0, c)
+      if (c === 0) {
+        del = false
+        p = (p + 1) % CONFIG.phrases.length
+        setTimeout(type, 400)
         return
       }
-      setTimeout(handleType, 50)
+      setTimeout(type, 45)
     }
   }
 
-  // --- 3D Tilt & Glow ---
+  // --- Social Links (Optional if already in HTML, but leaving to prevent breaking your code) ---
+  function socials() {
+    if (!el.socialRow) return
+    const links = [
+      { icon: "fa-brands fa-github", url: "https://github.com/SirSnoopsiee", tip: "GitHub" },
+      { icon: "fa-brands fa-youtube", url: "https://www.youtube.com/@SirSnoopsiee", tip: "YouTube" },
+      { icon: "fa-brands fa-discord", url: "https://discord.com/users/1478125540828385350", tip: "Discord" }
+    ]
+
+    // Only render if empty to avoid double-rendering if you put them in HTML directly
+    if(el.socialRow.children.length === 0) {
+      el.socialRow.innerHTML = links.map(l =>
+        `<a href="${l.url}" target="_blank" rel="noopener" class="social-btn" aria-label="${l.tip}" title="${l.tip}">
+          <i class="${l.icon}" style="font-size:20px"></i>
+        </a>`
+      ).join("")
+    }
+  }
+
+  // --- 3D Tilt & Glow Effect ---
   el.container?.addEventListener("pointermove", e => {
     if (!el.card || window.innerWidth <= 850) return
 
-    const rect = el.card.getBoundingClientRect()
-    const x = e.clientX - rect.left
-    const y = e.clientY - rect.top
+    const r = el.card.getBoundingClientRect()
+    const x = e.clientX - r.left
+    const y = e.clientY - r.top
 
-    // Update Glow Position
-    el.card.style.setProperty("--mouse-x", `${(x / rect.width) * 100}%`)
-    el.card.style.setProperty("--mouse-y", `${(y / rect.height) * 100}%`)
+    // Update glow position
+    if(el.glow) {
+      el.glow.style.setProperty("--mouse-x", `${(x / r.width) * 100}%`)
+      el.glow.style.setProperty("--mouse-y", `${(y / r.height) * 100}%`)
+    }
 
-    // Tilt Calculation
-    const rotateX = (y - rect.height / 2) / 25
-    const rotateY = (rect.width / 2 - x) / 25
+    // Calculate rotation
+    const xRotation = (y - r.height / 2) / 25
+    const yRotation = (r.width / 2 - x) / 25
 
-    el.card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
+    el.card.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`
   })
 
   el.container?.addEventListener("pointerleave", () => {
@@ -104,7 +125,12 @@ function start() {
     e.preventDefault()
     if (!el.ctxMenu) return
     el.ctxMenu.style.display = "block"
-    el.ctxMenu.style.left = `${e.pageX}px`
+    
+    // Keep menu on screen
+    const menuWidth = el.ctxMenu.offsetWidth || 160;
+    const xPos = (e.pageX + menuWidth > window.innerWidth) ? window.innerWidth - menuWidth - 10 : e.pageX;
+    
+    el.ctxMenu.style.left = `${xPos}px`
     el.ctxMenu.style.top = `${e.pageY}px`
   })
 
@@ -113,12 +139,16 @@ function start() {
   })
 
   $("#ctx-refresh")?.addEventListener("click", () => location.reload())
+  $("#ctx-close")?.addEventListener("click", () => {
+    if (el.ctxMenu) el.ctxMenu.style.display = "none"
+  })
 
-  // --- Init ---
-  updateClock()
-  setInterval(updateClock, 1000)
-  handleType()
-  fetchWeather()
+  // --- Initialize ---
+  clock()
+  setInterval(clock, 1000)
+  type()
+  weather()
+  socials()
 }
 
 document.addEventListener("DOMContentLoaded", start)
