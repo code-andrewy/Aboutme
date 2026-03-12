@@ -1,17 +1,18 @@
-/* Stop looking at my code me don't like that! :( */
+/* --- VARIABLES --- */
 :root {
   --accent-blue: #00d2ff;
   --accent-yellow: #ffd700;
-  --glass: rgba(15, 20, 35, 0.45);
-  --glass-dark: rgba(0, 0, 0, 0.25);
-  --border: rgba(255, 255, 255, 0.08);
+  --glass: rgba(15, 20, 35, 0.55);
+  --glass-dark: rgba(0, 0, 0, 0.35);
+  --border: rgba(255, 255, 255, 0.1);
   --text: #ffffff;
   --muted: #cbd5e1;
   --bg-fallback: url('https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg');
   --ease-smooth: cubic-bezier(0.23, 1, 0.32, 1);
-  --card-radius: 32px;
+  --card-radius: 28px;
 }
 
+/* --- RESET & BODY --- */
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
@@ -25,26 +26,32 @@ body {
   background-color: #05070a;
 }
 
+/* Background Image with Overlay */
 body::before {
   content: '';
   position: fixed;
   inset: 0;
-  background: linear-gradient(rgba(0,0,0,0.3), rgba(0,0,0,0.4)), var(--bg-fallback);
+  background: linear-gradient(rgba(0,0,0,0.2), rgba(0,0,0,0.6)), var(--bg-fallback);
   background-size: cover;
   background-position: center;
   z-index: -1;
 }
 
-/* --- THE CARD --- */
-.container { perspective: 1500px; padding: 20px; width: 100%; max-width: 1000px; }
+/* --- THE CARD CONTAINER --- */
+.container {
+  perspective: 1500px;
+  padding: 20px;
+  width: 100%;
+  max-width: 1000px;
+}
 
 .card {
   background: var(--glass);
-  backdrop-filter: blur(30px) saturate(150%);
-  -webkit-backdrop-filter: blur(30px) saturate(150%);
+  backdrop-filter: blur(25px) saturate(150%);
+  -webkit-backdrop-filter: blur(25px) saturate(150%);
   border: 1px solid var(--border);
   border-radius: var(--card-radius);
-  padding: 50px;
+  padding: 45px;
   display: grid;
   grid-template-columns: 260px 1fr;
   gap: 50px;
@@ -52,19 +59,19 @@ body::before {
   position: relative;
   transform-style: preserve-3d;
   transition: transform 0.1s ease-out;
+  overflow: hidden; /* Keeps the glow inside */
 }
 
 /* Mouse Glow Effect */
 .card-glow {
   position: absolute;
   inset: 0;
-  border-radius: inherit;
   pointer-events: none;
-  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.08), transparent 40%);
-  z-index: 1;
+  background: radial-gradient(circle at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255,255,255,0.06), transparent 50%);
+  z-index: 0;
 }
 
-/* --- LEFT SIDE --- */
+/* --- LEFT SIDE: PROFILE --- */
 .profile-section {
   display: flex;
   flex-direction: column;
@@ -76,22 +83,23 @@ body::before {
 }
 
 .pfp-outer {
-  width: 200px;
-  height: 200px;
+  width: 180px;
+  height: 180px;
   background: var(--accent-yellow);
   border-radius: 50%;
-  padding: 6px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.4);
+  padding: 5px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.5);
 }
 
-.pfp-inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 4px solid rgba(0,0,0,0.1); }
+.pfp-inner { width: 100%; height: 100%; border-radius: 50%; overflow: hidden; border: 4px solid rgba(0,0,0,0.2); }
 .pfp-img { width: 100%; height: 100%; object-fit: cover; }
 
-.social-row { display: flex; gap: 12px; }
+/* Social Buttons */
+.social-row { display: flex; gap: 10px; flex-wrap: wrap; justify-content: center; }
 .social-btn {
-  width: 45px;
-  height: 45px;
-  background: rgba(255,255,255,0.06);
+  width: 44px;
+  height: 44px;
+  background: rgba(255,255,255,0.08);
   border: 1px solid var(--border);
   border-radius: 12px;
   color: white;
@@ -99,53 +107,71 @@ body::before {
   align-items: center;
   justify-content: center;
   text-decoration: none;
-  transition: 0.3s;
-  position: relative;
+  transition: all 0.3s var(--ease-smooth);
 }
-
 .social-btn:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); border-color: var(--accent-blue); }
 
-/* --- RIGHT SIDE --- */
-.content-section { display: flex; flex-direction: column; gap: 24px; z-index: 2; }
+/* --- RIGHT SIDE: CONTENT --- */
+.content-section { display: flex; flex-direction: column; gap: 20px; z-index: 2; justify-content: center; }
 
 .greeting {
   color: var(--accent-blue);
   text-transform: uppercase;
   letter-spacing: 3px;
   font-weight: 800;
-  font-size: 0.7rem;
+  font-size: 0.75rem;
+  margin-bottom: 5px;
 }
 
-.name-logo { max-width: 340px; filter: drop-shadow(0 12px 24px rgba(0,0,0,0.4)); }
+.name-logo { max-width: 300px; filter: drop-shadow(0 8px 16px rgba(0,0,0,0.3)); }
 
-.experience-text { font-size: 1.6rem; font-weight: 700; }
+/* Typewriter Text */
+.typewriter-wrap {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 10px 0;
+}
+.cursor {
+  display: inline-block;
+  width: 3px;
+  height: 1.1em;
+  background: var(--accent-blue);
+  margin-left: 4px;
+  animation: blink 1s infinite;
+  vertical-align: text-bottom;
+}
+@keyframes blink { 50% { opacity: 0; } }
 
-.bio-box {
+/* Bio Box */
+.bio {
   background: var(--glass-dark);
-  padding: 22px;
-  border-radius: 20px;
+  padding: 20px 24px;
+  border-radius: 16px;
   border: 1px solid var(--border);
   color: var(--muted);
   line-height: 1.6;
+  font-size: 1rem;
 }
 
-/* Status Grid */
-.status-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.status-card {
-  background: rgba(255, 255, 255, 0.04);
+/* Bottom Status Pills/Cards */
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 5px; }
+.stat-box {
+  background: rgba(255, 255, 255, 0.05);
   border: 1px solid var(--border);
-  border-radius: 18px;
+  border-radius: 16px;
   padding: 16px 20px;
   display: flex;
   align-items: center;
-  gap: 15px;
+  gap: 16px;
+  transition: background 0.3s ease;
 }
-.status-card i { font-size: 1.3rem; color: var(--accent-blue); }
-.status-info { display: flex; flex-direction: column; }
-.status-val { font-size: 1.1rem; font-weight: 700; }
-.status-label { font-size: 0.8rem; color: var(--muted); }
+.stat-box:hover { background: rgba(255, 255, 255, 0.08); }
+.stat-box i { font-size: 1.4rem; color: var(--accent-blue); }
+.stat-box div { display: flex; flex-direction: column; }
+.stat-val { font-size: 1.1rem; font-weight: 700; color: white; }
+.stat-label { font-size: 0.85rem; color: var(--muted); margin-top: 2px; }
 
-/* Context Menu */
+/* --- CONTEXT MENU --- */
 #context-menu {
   position: fixed;
   display: none;
@@ -156,20 +182,16 @@ body::before {
   padding: 8px 0;
   z-index: 1000;
   min-width: 160px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
 }
-.menu-item {
-  padding: 10px 20px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  transition: background 0.2s;
-}
+.menu-item { padding: 10px 20px; cursor: pointer; display: flex; align-items: center; transition: background 0.2s; font-size: 0.9rem; }
 .menu-item:hover { background: rgba(255,255,255,0.1); }
 
-/* Mobile Adjust */
+/* --- MOBILE RESPONSIVE --- */
 @media (max-width: 850px) {
-  .card { grid-template-columns: 1fr; padding: 30px; text-align: center; }
+  .card { grid-template-columns: 1fr; padding: 30px; text-align: center; gap: 30px; }
   .profile-section { border-right: none; border-bottom: 1px solid var(--border); padding-right: 0; padding-bottom: 30px; }
-  .status-grid { grid-template-columns: 1fr; }
+  .info-grid { grid-template-columns: 1fr; }
+  .stat-box { justify-content: center; text-align: left; }
   .name-logo { margin: 0 auto; }
 }
