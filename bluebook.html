@@ -1,0 +1,264 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Lab v2</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+          --accent-blue: #00d2ff;
+          --accent-yellow: #ffd700;
+          --accent-green: #00ff88;
+          --glass: rgba(15, 20, 35, 0.9);
+          --border: rgba(255, 255, 255, 0.1);
+          --text: #ffffff;
+          --muted: #cbd5e1;
+          --bg: url('https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/charlie-brown-snoopy-stargazing-desktop-wallpaper-preview.jpg');
+        }
+
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        
+        body {
+          height: 100vh;
+          font-family: 'Plus Jakarta Sans', sans-serif;
+          background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), var(--bg);
+          background-size: cover;
+          background-position: center;
+          color: var(--text);
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          padding: 20px;
+          overflow: hidden;
+        }
+
+        .container {
+          width: 100%;
+          max-width: 950px;
+          background: var(--glass);
+          backdrop-filter: blur(25px);
+          -webkit-backdrop-filter: blur(25px);
+          border-radius: 35px;
+          padding: 60px;
+          display: grid;
+          grid-template-columns: 1fr 1.2fr;
+          gap: 60px;
+          border: 1px solid var(--border);
+          box-shadow: 0 40px 100px rgba(0,0,0,0.5);
+          position: relative;
+        }
+
+        /* Feature: Status Pulse */
+        .status-tag {
+            position: absolute;
+            top: 30px;
+            left: 30px;
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--muted);
+        }
+
+        .pulse {
+            width: 8px;
+            height: 8px;
+            background: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-green);
+            animation: pulse-glow 2s infinite;
+        }
+
+        .list-side {
+          display: flex;
+          flex-direction: column;
+          gap: 35px;
+          justify-content: center;
+        }
+
+        .step-list {
+          list-style: none;
+          font-size: 1.05rem;
+          display: flex;
+          flex-direction: column;
+          gap: 15px;
+        }
+
+        /* Added Pill Styling for List Items */
+        .step-list li { 
+          background: rgba(255, 255, 255, 0.05);
+          border: 1px solid var(--border);
+          padding: 12px 25px;
+          border-radius: 50px;
+          display: inline-flex;
+          align-items: center;
+          width: fit-content;
+        }
+
+        .step-list i { color: var(--accent-blue); margin-right: 15px; font-size: 1.2rem; }
+
+        /* Updated to Pill Shape */
+        .btn-main {
+          display: inline-flex;
+          align-items: center;
+          gap: 12px;
+          background: var(--accent-yellow);
+          color: #000;
+          padding: 15px 35px;
+          border-radius: 50px; /* Pill radius */
+          text-decoration: none;
+          font-weight: 800;
+          transition: all 0.3s ease;
+          width: fit-content;
+        }
+
+        .btn-main:hover { transform: translateY(-3px) scale(1.02); background: #fff; }
+
+        .code-side {
+          display: flex;
+          flex-direction: column;
+          gap: 20px;
+          justify-content: center;
+        }
+
+        #codeBox {
+          width: 100%;
+          background: rgba(255, 255, 255, 0.03);
+          border: none;
+          border-left: 3px solid var(--accent-blue);
+          padding: 15px 20px;
+          color: var(--accent-blue);
+          font-family: 'Courier New', monospace;
+          font-size: 0.95rem;
+          line-height: 1.6;
+          height: 130px;
+          resize: none;
+          outline: none;
+          border-radius: 0 15px 15px 0;
+        }
+
+        .actions {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+
+        /* Updated to Pill Shape */
+        .copy-btn {
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 12px 28px;
+            border-radius: 50px; /* Pill radius */
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+            font-size: 0.85rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .copy-btn:hover { background: var(--accent-blue); color: #000; }
+        .copy-btn.success { background: var(--accent-green); color: #000; }
+
+        /* Added specific pill class for the trigger link */
+        .trigger-pill {
+            background: rgba(255, 215, 0, 0.1);
+            color: var(--accent-yellow);
+            border: 1px solid var(--accent-yellow);
+            padding: 12px 28px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-size: 0.85rem;
+            font-weight: bold;
+            transition: 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .trigger-pill:hover {
+            background: var(--accent-yellow);
+            color: #000;
+        }
+
+        @keyframes pulse-glow {
+            0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0.7); }
+            70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(0, 255, 136, 0); }
+            100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(0, 255, 136, 0); }
+        }
+
+        @media (max-width: 800px) {
+          .container { grid-template-columns: 1fr; padding: 40px; margin-top: 50px; }
+          .status-tag { top: 15px; left: 50%; transform: translateX(-50%); }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="status-tag">
+        </div>
+
+        <div class="list-side">
+            <ul class="step-list">
+                <li><i class="fas fa-file-code"></i> Copy code bud</li>
+                <li><i class="fas fa-rocket"></i> Open the Editor</li>
+            </ul>
+
+            <a href="https://htmledit.squarefree.com/" target="_self" class="btn-main">
+                <i class="fas fa-external-link-alt"></i> Open code editor
+            </a>
+        </div>
+
+        <div class="code-side">
+            <textarea id="codeBox" readonly><a href="javascript:window.open('javascript:alert();');">Click here if it didn't open yet</a>
+<script>window.open("javascript:alert();");</script></textarea>
+            
+            <div class="actions">
+                <button class="copy-btn" id="copyBtn" onclick="copyToClipboard()">
+                    <i class="fas fa-copy"></i> Copy Code
+                </button>
+                <a href="javascript:window.open('javascript:alert();');" class="trigger-pill">
+                    <i class="fas fa-bolt"></i> Trigger it here!
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        async function copyToClipboard() {
+            const code = document.getElementById('codeBox').value;
+            const btn = document.getElementById('copyBtn');
+            
+            try {
+                await navigator.clipboard.writeText(code);
+                
+                // Success State
+                btn.classList.add('success');
+                btn.innerHTML = '<i class="fas fa-check"></i> Copied!';
+                
+                setTimeout(() => {
+                    btn.classList.remove('success');
+                    btn.innerHTML = '<i class="fas fa-copy"></i> Copy Code';
+                }, 2000);
+            } catch (err) {
+                console.error('Failed to copy!', err);
+            }
+        }
+
+        // Standard Alert
+        window.open("javascript:alert('Lab Ready');");
+    </script>
+
+</body>
+</html>
