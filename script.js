@@ -17,98 +17,82 @@ function start() {
     temp: $("#temp"),
     cond: $("#cond"),
     glow: $("#glow"),
-    ctxMenu: $("#context-menu"),
-    videoModal: $("#video-modal")
+    ctxMenu: $("#context-menu")
   }
 
   state.el = el
 
   // --- Clock ---
-  function clock() {
+  const updateClock = () => {
     if (el.time) {
       el.time.textContent = new Date().toLocaleTimeString([], {
         hour: "2-digit",
-        minute: "2-digit"
+        minute: "2-digit",
+        second: "2-digit" // Added seconds for better visual feedback
       })
     }
   }
 
   // --- Weather ---
-  async function weather() {
+  async function fetchWeather() {
     try {
-      const r = await fetch(CONFIG.weatherURL)
-      if (!r.ok) throw new Error()
-      const data = await r.json()
+      const response = await fetch(CONFIG.weatherURL)
+      const data = await response.json()
       const cur = data?.properties?.periods?.[0]
       
       if (el.temp) el.temp.textContent = cur ? `${cur.temperature}°F` : "72°F"
-      if (el.cond) el.cond.textContent = cur ? cur.shortForecast : "Clear"
+      if (el.cond) el.cond.textContent = cur ? cur.shortForecast : "Clear Sky"
     } catch (err) {
+      console.error("Weather Error:", err)
       if (el.temp) el.temp.textContent = "72°F"
-      if (el.cond) el.cond.textContent = "Clear"
+      if (el.cond) el.cond.textContent = "Clear Sky"
     }
   }
 
   // --- Typewriter ---
-  let p = 0, c = 0, del = false
-  function type() {
-    if (!el.typewriter) return
-    const phrase = CONFIG.phrases[p] || ""
-
-    if (!del) {
-      c++
-      el.typewriter.textContent = phrase.slice(0, c)
-      if (c === phrase.length) {
-        del = true
-        setTimeout(type, 2000)
+  let pIndex = 0, charIndex = 0, isDeleting = false
+  function handleType() {
+    const phrase = CONFIG.phrases[pIndex]
+    
+    if (!isDeleting) {
+      charIndex++
+      el.typewriter.textContent = phrase.slice(0, charIndex)
+      if (charIndex === phrase.length) {
+        isDeleting = true
+        setTimeout(handleType, 2000)
         return
       }
-      setTimeout(type, 90)
+      setTimeout(handleType, 100)
     } else {
-      c--
-      el.typewriter.textContent = phrase.slice(0, c)
-      if (c === 0) {
-        del = false
-        p = (p + 1) % CONFIG.phrases.length
-        setTimeout(type, 400)
+      charIndex--
+      el.typewriter.textContent = phrase.slice(0, charIndex)
+      if (charIndex === 0) {
+        isDeleting = false
+        pIndex = (pIndex + 1) % CONFIG.phrases.length
+        setTimeout(handleType, 500)
         return
       }
-      setTimeout(type, 45)
+      setTimeout(handleType, 50)
     }
   }
 
-  // --- Social Links ---
-  function socials() {
-    if (!el.socialRow) return
-    const links = [
-      { icon: "fab fa-github", url: "https://github.com/SirSnoopsiee", tip: "GitHub", class: "github" },
-      { icon: "fab fa-youtube", url: "https://www.youtube.com/@SirSnoopsiee", tip: "YouTube", class: "youtube" },
-      { icon: "fas fa-envelope", url: "https://sirsnoopy.pages.dev/contact", tip: "Contact", class: "contact" },
-      { icon: "fa-brands fa-discord", url: "https://discordapp.com/users/1478125540828385350", tip: "Discord", class: "discord" }
-    ]
-
-    el.socialRow.innerHTML = links.map(l =>
-      `<a href="${l.url}" target="_blank" class="social-btn ${l.class}" data-tooltip="${l.tip}" aria-label="${l.tip}">
-        <i class="${l.icon}" style="font-size:22px"></i>
-      </a>`
-    ).join("")
-  }
-
-  // --- 3D Tilt Effect ---
+  // --- 3D Tilt & Glow ---
   el.container?.addEventListener("pointermove", e => {
-    if (!el.card || window.innerWidth <= 768) return
+    if (!el.card || window.innerWidth <= 850) return
 
-    const r = el.card.getBoundingClientRect()
-    const x = e.clientX - r.left
-    const y = e.clientY - r.top
+    const rect = el.card.getBoundingClientRect()
+    const x = e.clientX - rect.left
+    const y = e.clientY - rect.top
 
-    el.glow?.style.setProperty("--mouse-x", `${(x / r.width) * 100}%`)
-    el.glow?.style.setProperty("--mouse-y", `${(y / r.height) * 100}%`)
+    // Update Glow Position
+    el.card.style.setProperty("--mouse-x", `${(x / rect.width) * 100}%`)
+    el.card.style.setProperty("--mouse-y", `${(y / rect.height) * 100}%`)
 
-    const xRotation = (y - r.height / 2) / 20
-    const yRotation = (r.width / 2 - x) / 20
+    // Tilt Calculation
+    const rotateX = (y - rect.height / 2) / 25
+    const rotateY = (rect.width / 2 - x) / 25
 
-    el.card.style.transform = `rotateX(${xRotation}deg) rotateY(${yRotation}deg)`
+    el.card.style.transform = `rotateX(${rotateX}deg) rotateY(${rotateY}deg)`
   })
 
   el.container?.addEventListener("pointerleave", () => {
@@ -130,12 +114,11 @@ function start() {
 
   $("#ctx-refresh")?.addEventListener("click", () => location.reload())
 
-  // --- Initialize ---
-  clock()
-  setInterval(clock, 1000)
-  type()
-  weather()
-  socials()
+  // --- Init ---
+  updateClock()
+  setInterval(updateClock, 1000)
+  handleType()
+  fetchWeather()
 }
 
 document.addEventListener("DOMContentLoaded", start)
