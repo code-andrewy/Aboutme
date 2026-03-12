@@ -40,52 +40,50 @@
         </div>
 
         <div class="social-row">
-          <a href="https://github.com/SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" aria-label="GitHub">
+          <a href="https://github.com/SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" data-tooltip="GitHub" aria-label="GitHub">
             <i class="fa-brands fa-github"></i>
           </a>
-          <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" aria-label="YouTube">
+          <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" data-tooltip="YouTube" aria-label="YouTube">
             <i class="fa-brands fa-youtube"></i>
           </a>
-          <a href="https://discord.com/users/1478125540828385350" target="_blank" rel="noopener" class="social-btn" aria-label="Discord">
+          <a href="mailto:your-email@example.com" class="social-btn" data-tooltip="Email" aria-label="Email">
+            <i class="fa-solid fa-envelope"></i>
+          </a>
+          <a href="https://discord.com/users/1478125540828385350" target="_blank" rel="noopener" class="social-btn" data-tooltip="Discord" aria-label="Discord">
             <i class="fa-brands fa-discord"></i>
           </a>
         </div>
       </div>
 
       <div class="content-section">
-        <div>
+        <div class="name-logo-wrapper">
           <p class="greeting">Hello 👋 my name is</p>
           <img src="https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/image-removebg-preview%20(1).png"
                alt="sirsnoopy" class="name-logo">
         </div>
 
-        <div class="typewriter-wrap">
-          Experience in 
-          <span id="typewriter" style="color:var(--accent-blue)"></span>
-          <span class="cursor"></span>
+        <div class="pill-group">
+          <div class="pill">
+            <i class="fa-regular fa-clock"></i>
+            <span id="time">00:00</span>
+          </div>
+          
+          <div class="pill">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <span id="temp">--°F</span>
+            <span id="cond" style="margin-left: 4px;">Loading...</span>
+          </div>
+
+          <div class="pill exp">
+            <i class="fa-solid fa-code"></i>
+            <span>Experience in </span>
+            <span id="typewriter" style="color:var(--accent-blue); margin-left: 4px; font-weight: 700;"></span>
+          </div>
         </div>
 
         <p class="bio">
           A student who started coding at age 12. I make and find cool stuff. I also like snoopy :O
         </p>
-
-        <div class="info-grid">
-          <div class="stat-box">
-            <i class="fa-regular fa-clock"></i>
-            <div>
-              <span class="stat-val" id="time">00:00</span>
-              <span class="stat-label">Local Time</span>
-            </div>
-          </div>
-
-          <div class="stat-box">
-            <i class="fa-solid fa-cloud-sun"></i>
-            <div>
-              <span class="stat-val" id="temp">--°F</span>
-              <span class="stat-label" id="cond">Loading...</span>
-            </div>
-          </div>
-        </div>
       </div>
 
     </main>
