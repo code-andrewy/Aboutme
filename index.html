@@ -12,9 +12,6 @@
 </head>
 
 <body>
-
-  <div id="bg-overlay"></div>
-
   <div id="context-menu" aria-hidden="true" role="menu">
     <div class="menu-item" id="ctx-refresh" role="menuitem" tabindex="0">
       <i class="fa-solid fa-rotate"></i>
@@ -27,74 +24,59 @@
   </div>
 
   <div class="container" id="tilt-container">
-    <main class="card" id="tilt-card" role="application" aria-label="Sirsnoopy profile card">
-      
+    <main class="card" id="tilt-card">
       <div class="card-glow" id="glow"></div>
       
       <div class="profile-section">
-        <div class="pfp-outer" tabindex="0">
+        <div class="pfp-outer">
           <div class="pfp-inner">
-            <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/unwatermarked_Gemini_Generated_Image_5cxwxp5cxwxp5cxw.png"
-                 alt="Sirsnoopy Avatar" class="pfp-img">
+            <img src="https://raw.githubusercontent.com/code-andrewy/Images/refs/heads/main/unwatermarked_Gemini_Generated_Image_5cxwxp5cxwxp5cxw.png" alt="Sirsnoopy Avatar" class="pfp-img">
           </div>
         </div>
 
         <div class="social-row">
-          <a href="https://github.com/SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" data-tooltip="GitHub" aria-label="GitHub">
-            <i class="fa-brands fa-github"></i>
-          </a>
-          <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" rel="noopener" class="social-btn" data-tooltip="YouTube" aria-label="YouTube">
-            <i class="fa-brands fa-youtube"></i>
-          </a>
-          <a href="mailto:your-email@example.com" class="social-btn" data-tooltip="Email" aria-label="Email">
-            <i class="fa-solid fa-envelope"></i>
-          </a>
-          <a href="https://discord.com/users/1478125540828385350" target="_blank" rel="noopener" class="social-btn" data-tooltip="Discord" aria-label="Discord">
-            <i class="fa-brands fa-discord"></i>
-          </a>
+          <a href="https://github.com/SirSnoopsiee" target="_blank" class="social-btn"><i class="fa-brands fa-github"></i></a>
+          <a href="https://www.youtube.com/@SirSnoopsiee" target="_blank" class="social-btn"><i class="fa-brands fa-youtube"></i></a>
+          <a href="https://discord.com/users/1478125540828385350" target="_blank" class="social-btn"><i class="fa-brands fa-discord"></i></a>
         </div>
       </div>
 
       <div class="content-section">
-        <div class="name-logo-wrapper">
-          <p class="greeting">Hello 👋 my name is</p>
-          <img src="https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/image-removebg-preview%20(1).png"
-               alt="sirsnoopy" class="name-logo">
+        <div>
+          <p class="greeting">HELLO 👋 MY NAME IS</p>
+          <img src="https://raw.githubusercontent.com/code-andrewy/jumpman64beta/refs/heads/main/image-removebg-preview%20(1).png" alt="sirsnoopy" class="name-logo">
         </div>
 
-        <div class="pill-group">
-          <div class="pill">
-            <i class="fa-regular fa-clock"></i>
-            <span id="time">00:00</span>
-          </div>
-          
-          <div class="pill">
-            <i class="fa-solid fa-cloud-sun"></i>
-            <span id="temp">--°F</span>
-            <span id="cond" style="margin-left: 4px;">Loading...</span>
-          </div>
-
-          <div class="pill exp">
-            <i class="fa-solid fa-code"></i>
-            <span>Experience in </span>
-            <span id="typewriter" style="color:var(--accent-blue); margin-left: 4px; font-weight: 700;"></span>
-          </div>
+        <div class="typewriter-wrap">
+          Experience in <span id="typewriter"></span><span class="cursor"></span>
         </div>
 
-        <p class="bio">
+        <div class="bio">
           A student who started coding at age 12. I make and find cool stuff. I also like snoopy :O
-        </p>
+        </div>
+
+        <div class="info-grid">
+          <div class="stat-box">
+            <i class="fa-regular fa-clock"></i>
+            <div>
+              <span class="stat-val" id="time">00:00</span>
+              <span class="stat-label">Local Time</span>
+            </div>
+          </div>
+
+          <div class="stat-box">
+            <i class="fa-solid fa-cloud-sun"></i>
+            <div>
+              <span class="stat-val" id="temp">--°F</span>
+              <span class="stat-label" id="cond">Loading...</span>
+            </div>
+          </div>
+        </div>
       </div>
 
     </main>
   </div>
 
-  <div class="video-modal" id="video-modal" aria-hidden="true">
-    <div class="video-frame" role="dialog" aria-modal="true" aria-label="Intro video">
-      <div id="intro-player" style="width:100%;height:100%;"></div>
-    </div>
-  </div>
-
-  <script src="script.js" defer></script>
+  <script src="script.js"></script>
 </body>
 </html>
